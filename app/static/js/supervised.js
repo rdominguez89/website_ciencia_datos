@@ -443,23 +443,28 @@ function renderStandardScalingSection(columns) {
  * Render train/test split section
  */
 function renderTrainTestSplitSection() {
+    // Get current values or use defaults if not set
+    const currentTrainSize = document.getElementById('trainSize')?.value || 80;
+    const currentTestSize = document.getElementById('testSize')?.value || 20;
+    const currentRandomSeed = document.getElementById('randomSeed')?.value || 42;
+
     return `
         <div class="analysis-subsection">
             <h4>Train/Test Split Configuration</h4>
             <div class="split-config">
                 <div class="split-control">
                     <label>Training Size (%):</label>
-                    <input type="number" id="trainSize" min="1" max="99" value="80" class="split-input">
+                    <input type="number" id="trainSize" min="1" max="99" value="${currentTrainSize}" class="split-input">
                     <button class="split-adjust" data-direction="up" data-target="trainSize">↑</button>
                     <button class="split-adjust" data-direction="down" data-target="trainSize">↓</button>
                 </div>
                 <div class="split-control">
                     <label>Test Size (%):</label>
-                    <input type="number" id="testSize" min="1" max="99" value="20" class="split-input" readonly>
+                    <input type="number" id="testSize" min="1" max="99" value="${currentTestSize}" class="split-input" readonly>
                 </div>
                 <div class="split-control">
                     <label>Random Seed:</label>
-                    <input type="number" id="randomSeed" value="42" class="split-input">
+                    <input type="number" id="randomSeed" value="${currentRandomSeed}" class="split-input">
                 </div>
             </div>
         </div>
@@ -1046,6 +1051,11 @@ function setupRunAnalysisButton(statsData) {
     if (!runAnalysisBtn) return;
 
     runAnalysisBtn.addEventListener('click', async function() {
+        // Store current values before any potential re-render
+        const currentTrainSize = document.getElementById('trainSize')?.value || 80;
+        const currentTestSize = document.getElementById('testSize')?.value || 20;
+        const currentRandomSeed = document.getElementById('randomSeed')?.value || 42;
+
         // Disable the button and show loading state
         runAnalysisBtn.disabled = true;
         runAnalysisBtn.textContent = 'Processing...';
@@ -1057,6 +1067,14 @@ function setupRunAnalysisButton(statsData) {
 
             const analysisConfig = prepareAnalysisConfig(statsData);
             const analysisResults = await runAnalysis(analysisConfig);
+            
+            // Restore the values after analysis
+            if (document.getElementById('trainSize')) {
+                document.getElementById('trainSize').value = currentTrainSize;
+                document.getElementById('testSize').value = currentTestSize;
+                document.getElementById('randomSeed').value = currentRandomSeed;
+            }
+            
             displayAnalysisResults(analysisResults);
         } catch (error) {
             handleError('Error during analysis:', error);
@@ -1099,6 +1117,15 @@ function validateAnalysisInputs(statsData) {
  * Prepare analysis configuration object
  */
 function prepareAnalysisConfig(statsData) {
+    // Get current values or use defaults
+    const trainSizeInput = document.getElementById('trainSize');
+    const testSizeInput = document.getElementById('testSize');
+    const randomSeedInput = document.getElementById('randomSeed');
+    
+    const trainSize = trainSizeInput ? parseInt(trainSizeInput.value) : 80;
+    const testSize = testSizeInput ? parseInt(testSizeInput.value) : 20;
+    const randomSeed = randomSeedInput ? parseInt(randomSeedInput.value) : 42;
+
     const encoderColumns = statsData.dtype_info.filter(col => col.type === 'object' || col.type === 'category' || col.unique_values <= 5);
     const isCategorical = encoderColumns.some(col => col.column === selectedPredictionColumn) || 
                          selectedOneHotColumns.has(selectedPredictionColumn);
@@ -1116,9 +1143,9 @@ function prepareAnalysisConfig(statsData) {
         prediction_column: selectedPredictionColumn,
         onehot_columns: Array.from(selectedOneHotColumns),
         standardscale_columns: Array.from(selectedStandardScaleColumns),
-        train_size: parseInt(document.getElementById('trainSize').value) / 100,
-        test_size: parseInt(document.getElementById('testSize').value) / 100,
-        random_seed: parseInt(document.getElementById('randomSeed').value),
+        train_size: trainSize,
+        test_size: testSize,
+        random_seed: randomSeed,
         model: selectedModel,
         model_params: params
     };
@@ -1259,51 +1286,71 @@ function resetState() {
 // ==============================================
 
 /**
- * Create fullscreen image overlay
+ * Create fullscreen image overlay with responsive sizing
  */
 function createImageOverlay(src, alt) {
-    // Add class to body to hide scrollbar
+    // Add overflow hidden to body to prevent scrolling
     document.body.classList.add('overlay-active');
-
+    
     const overlay = document.createElement('div');
     overlay.className = 'plot-overlay';
-
+    
     const content = document.createElement('div');
     content.className = 'plot-overlay-content';
-
+    
     const closeBtn = document.createElement('span');
     closeBtn.className = 'close-overlay';
-    closeBtn.innerHTML = '×';
-
+    closeBtn.innerHTML = '&times;';
+    
     const img = document.createElement('img');
     img.src = src;
     img.alt = alt;
-
+    
+    // Apply responsive image sizing
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = 'calc(100vh - 60px)'; // Account for padding and close button
+    img.style.objectFit = 'contain';
+    img.style.display = 'block';
+    
+    // Build overlay
     content.appendChild(closeBtn);
     content.appendChild(img);
     overlay.appendChild(content);
     document.body.appendChild(overlay);
-
-    function closeOverlay() {
+    
+    // Close functionality
+    const closeOverlay = () => {
         document.body.removeChild(overlay);
-        // Remove class from body to restore scrolling
         document.body.classList.remove('overlay-active');
-        document.removeEventListener('keydown', escClose);
-    }
-
+        window.removeEventListener('resize', handleResize);
+    };
+    
     closeBtn.addEventListener('click', closeOverlay);
-    overlay.addEventListener('click', function(e) {
+    overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
             closeOverlay();
         }
     });
-
-    function escClose(e) {
+    
+    // Close with ESC key
+    document.addEventListener('keydown', function escClose(e) {
         if (e.key === 'Escape') {
             closeOverlay();
+            document.removeEventListener('keydown', escClose);
         }
-    }
-    document.addEventListener('keydown', escClose);
+    });
+    
+    // Handle window resize
+    const handleResize = () => {
+        // Adjust image size based on current viewport
+        const maxHeight = window.innerHeight - 60; // Account for padding
+        img.style.maxHeight = `${maxHeight}px`;
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Initial size calculation
+    handleResize();
 }
 
 /**

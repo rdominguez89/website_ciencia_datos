@@ -564,49 +564,72 @@ function setupImageClickHandlers() {
     });
 }
 
+/**
+ * Create fullscreen image overlay with responsive sizing
+ */
 function createImageOverlay(src, alt) {
-    // Add class to body to hide scrollbar
+    // Add overflow hidden to body to prevent scrolling
     document.body.classList.add('overlay-active');
-
+    
     const overlay = document.createElement('div');
     overlay.className = 'plot-overlay';
-
+    
     const content = document.createElement('div');
     content.className = 'plot-overlay-content';
-
+    
     const closeBtn = document.createElement('span');
     closeBtn.className = 'close-overlay';
-    closeBtn.innerHTML = '×';
-
+    closeBtn.innerHTML = '&times;';
+    
     const img = document.createElement('img');
     img.src = src;
     img.alt = alt;
-
+    
+    // Apply responsive image sizing
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = 'calc(100vh - 60px)'; // Account for padding and close button
+    img.style.objectFit = 'contain';
+    img.style.display = 'block';
+    
+    // Build overlay
     content.appendChild(closeBtn);
     content.appendChild(img);
     overlay.appendChild(content);
     document.body.appendChild(overlay);
-
-    function closeOverlay() {
+    
+    // Close functionality
+    const closeOverlay = () => {
         document.body.removeChild(overlay);
-        // Remove class from body to restore scrolling
         document.body.classList.remove('overlay-active');
-        document.removeEventListener('keydown', escClose);
-    }
-
+        window.removeEventListener('resize', handleResize);
+    };
+    
     closeBtn.addEventListener('click', closeOverlay);
-    overlay.addEventListener('click', function(e) {
+    overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
             closeOverlay();
         }
     });
-
-    function escClose(e) {
+    
+    // Close with ESC key
+    document.addEventListener('keydown', function escClose(e) {
         if (e.key === 'Escape') {
             closeOverlay();
+            document.removeEventListener('keydown', escClose);
         }
-    }
-    document.addEventListener('keydown', escClose);
+    });
+    
+    // Handle window resize
+    const handleResize = () => {
+        // Adjust image size based on current viewport
+        const maxHeight = window.innerHeight - 60; // Account for padding
+        img.style.maxHeight = `${maxHeight}px`;
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Initial size calculation
+    handleResize();
 }
 
 // Tab Content Rendering

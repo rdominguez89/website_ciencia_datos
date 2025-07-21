@@ -113,22 +113,36 @@ h1 {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .links .row {
-        flex-direction: column;
+    .links {
+        padding: 1.5rem;
+        width: 100%; /* Ensure full width */
+        box-sizing: border-box; /* Include padding in width calculation */
     }
     
+    .links .row {
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%; /* Full width */
+        align-items: center; /* Center children horizontally */
+    }
+    
+    /* Target ALL links in mobile view */
+    .links a,
     .links .row a {
-        max-width: 100%;
+        width: 100%; /* Force full width */
+        max-width: 100%; /* Override any max-width */
+        box-sizing: border-box; /* Include padding in width */
+    }
+    
+    /* Remove any specific max-width for row children */
+    .links .row a {
+        max-width: 100% !important;
     }
     
     h1 {
         font-size: 2rem;
         margin: 1.5rem 0;
-    }
-    
-    .links a {
-        padding: 1rem 1.5rem;
-        font-size: 1rem;
+        padding: 0 1rem;
     }
 }
 
