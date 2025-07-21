@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Conda environment
+env/
+venv/
+.conda/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data files
+*.csv
+*.pickle
+*.pkl
+*.parquet
+*.feather
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# OS generated files
+.DS_Store
+Thumbs.db

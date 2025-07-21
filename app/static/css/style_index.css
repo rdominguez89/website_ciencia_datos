@@ -1,0 +1,147 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a202c;  /* Dark slate background */
+    color: #e2e8f0;  /* Light text for contrast */
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    margin: 2rem 0;
+    color: #ffffff;  /* Pure white for headings */
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.links a {
+    display: block;
+    padding: 1.2rem 2rem;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    background-color: #4299e1;  /* Vibrant blue */
+    border-radius: 8px;
+    font-weight: 500;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.links a:hover:not(.disabled) {
+    background-color: #3182ce;  /* Slightly darker blue */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Second row container */
+.links .row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+/* Make both supervised buttons same width */
+.links .row a {
+    flex: 1;
+    min-width: 0; /* Allows text to force width */
+    max-width: calc(50% - 0.75rem);
+}
+
+/* Disabled links */
+.links a.disabled {
+    background-color: #4a5568;  /* Dark gray */
+    color: #a0aec0;  /* Light gray text */
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* Add some subtle animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.links a {
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0; /* Start invisible for animation */
+}
+
+.links a:nth-child(1) { animation-delay: 0.1s; }
+.links .row a:nth-child(1) { animation-delay: 0.2s; }
+.links .row a:nth-child(2) { animation-delay: 0.3s; }
+.links a:last-child { animation-delay: 0.4s; }
+
+/* Add a subtle glow effect on hover */
+.links a:hover:not(.disabled)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(66, 153, 225, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Add a container shadow for depth */
+.container-shadow {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 
+                0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .links .row {
+        flex-direction: column;
+    }
+    
+    .links .row a {
+        max-width: 100%;
+    }
+    
+    h1 {
+        font-size: 2rem;
+        margin: 1.5rem 0;
+    }
+    
+    .links a {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Add a subtle background pattern */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 30%, rgba(45, 55, 72, 0.8) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(26, 32, 44, 0.9) 0%, transparent 40%);
+    z-index: -1;
+    opacity: 0.3;
+}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <a href="{{ url_for('main.index') }}" class="back-button">← Back to Main</a>
+    <h1>Numerical Analysis</h1>
+    
+    <div class="upload-section">
+        <input type="file" id="csvFile" accept=".csv">
+        <button id="uploadBtn">Upload CSV</button>
+    </div>
+    
+    <div id="dataPreview"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/numerical.js') }}"></script>
+{% endblock %}
