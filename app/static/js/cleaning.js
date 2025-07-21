@@ -355,7 +355,6 @@ function setupOutlierManagement(data, visualizationsContainer) {
 function setupOutlierEventListeners() {
     const updateButtonStates = () => {
         const removeBtn = document.getElementById('removeOutliersBtn');
-        const correlationBtn = document.getElementById('correlationPlotBtn');
         const anyChecked = document.querySelectorAll('.outlier-checkbox:checked').length > 0;
 
         if (removeBtn) {
@@ -363,7 +362,8 @@ function setupOutlierEventListeners() {
         }
     };
 
-    document.querySelectorAll('.select-all-btn').forEach(btn => {
+    // Select All buttons
+    document.querySelectorAll('.outlier-controls button:nth-child(1)').forEach(btn => {
         btn.addEventListener('click', function() {
             const column = this.dataset.column;
             document.querySelectorAll(`.outlier-checkbox[data-column="${column}"]`).forEach(cb => {
@@ -373,7 +373,8 @@ function setupOutlierEventListeners() {
         });
     });
 
-    document.querySelectorAll('.deselect-all-btn').forEach(btn => {
+    // Deselect All buttons
+    document.querySelectorAll('.outlier-controls button:nth-child(2)').forEach(btn => {
         btn.addEventListener('click', function() {
             const column = this.dataset.column;
             document.querySelectorAll(`.outlier-checkbox[data-column="${column}"]`).forEach(cb => {
@@ -383,10 +384,12 @@ function setupOutlierEventListeners() {
         });
     });
 
+    // Checkbox change events
     document.querySelectorAll('.outlier-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', updateButtonStates);
     });
 
+    // Remove Outliers button
     document.getElementById('removeOutliersBtn')?.addEventListener('click', async function() {
         if (this.disabled) return;
 
