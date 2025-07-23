@@ -275,12 +275,25 @@ tr:nth-child(even) {
 
 .plot-overlay-content {
     position: relative;
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 90vw;        /* Viewport width units */
+    max-height: 90vh;       /* Viewport height units */
+    width: auto;
+    height: auto;
     background: #1a202c;
     padding: 20px;
     border-radius: 8px;
     border: 1px solid #4a5568;
+    display: flex;          /* Added */
+    justify-content: center; /* Added */
+    align-items: center;    /* Added */
+    overflow: hidden;       /* Added */
+}
+
+.plot-overlay-content img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
 }
 
 .close-overlay {
@@ -299,6 +312,7 @@ tr:nth-child(even) {
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     border: 1px solid #4a5568;
+    z-index: 1001;          /* Added to ensure it stays above image */
 }
 
 .close-overlay:hover {
@@ -311,32 +325,10 @@ tr:nth-child(even) {
     .container {
         padding: 1rem;
     }
-
+    
     .upload-section {
         flex-direction: column;
         gap: 1rem;
-    }
-
-    table {
-        display: block;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        white-space: nowrap;
-    }
-    
-    th, td {
-        padding: 6px 8px; /* Slightly reduced padding */
-        font-size: 0.85em; /* Slightly smaller font */
-    }
-    
-    /* Optional: Add horizontal scroll indicator */
-    table::after {
-        content: "→";
-        position: absolute;
-        right: 10px;
-        bottom: 5px;
-        color: #4299e1;
-        font-size: 1.2em;
     }
     
     .data-tabs {
@@ -440,3 +432,234 @@ input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.3);
 }
 
+/* Train/Test Split Section Styling */
+.analysis-subsection {
+    background: #2d3748;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #4a5568;
+    
+}
+
+.analysis-subsection h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.split-config {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.split-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.split-control label {
+    width: 120px;
+    font-size: 0.9rem;
+    color: white;
+}
+
+.split-input {
+    width: 70px;
+    padding: 6px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-align: center;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.split-input:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.split-adjust {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    color: #495057;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.split-adjust:hover {
+    background-color: #dee2e6;
+    border-color: #adb5bd;
+}
+
+.split-adjust:active {
+    background-color: #ced4da;
+}
+
+.split-adjust[data-direction="up"]::after {
+    content: "↑";
+}
+
+.split-adjust[data-direction="down"]::after {
+    content: "↓";
+}
+
+/* Model selection container */
+.model-selection-container {
+    border: 1px solid #4a5568;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+/* Model options grid */
+.model-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Individual model option box */
+.model-option-box {
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 12px;
+}
+
+.model-option-box label {
+    display: block;
+    cursor: pointer;
+}
+
+.model-option-box input[type="radio"] {
+    margin-right: 8px;
+}
+
+.model-name {
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 3px;
+}
+
+.model-description {
+    display: block;
+    font-size: 0.85em;
+    color: #e3dbdbbf; /* Slightly lighter gray */
+    line-height: 1.4;
+    margin-left: 24px; /* Align with text */
+}
+
+/* Parameters section */
+.model-params-section {
+    border: 1px solid #4a5568;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.model-params {
+    margin-top: 10px;
+    font-size: 1.1rem;
+}
+
+.param-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.param-control {
+    display: block;
+    cursor: pointer;
+    align-items: center;
+    gap: 8px;
+}
+
+.param-control label {
+    min-width: 100px;
+    font-size: 0.9em;
+}
+
+.param-control input {
+    padding: 5px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: auto;
+}
+
+.cv-options {
+    background: #2d3748;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #4a5568;
+}
+
+.cv-options h4 {
+    margin-top: 0;
+}
+
+.cv-option {
+    margin: 0.5em 0;
+}
+
+.cv-option label {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.cv-param {
+    width: 50px;
+    padding: 0.2em;
+    text-align: center;
+}
+
+.thumbnail-container {
+    width: 100%;
+    height: 500px; /* Fixed height for thumbnails */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.thumbnail-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: zoom-in;
+    transition: transform 0.2s;
+}
+
+.thumbnail-image:hover {
+    transform: scale(1.02);
+}
+
+/* Loading state */
+.thumbnail-container.loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}

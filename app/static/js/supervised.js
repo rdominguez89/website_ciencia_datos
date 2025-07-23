@@ -9,25 +9,31 @@ let selectedStandardScaleColumns = new Set();
 let selectedModel = '';
 let modelParams = {};
 let modelDefaultParams = {};
+let cvState = {
+    method: 'none',
+    kfoldSplits: 5,
+    shuffleSplits: 5,
+    shuffleTestSize: 20
+};
 
 // Model definitions
 const categoricalModels = [
-    { name: 'logistic', params: [{ name: 'C', value: '1.0' }, { name: 'penalty', value: 'l2' }, { name: 'solver', value: 'lbfgs' }] },
-    { name: 'svc', params: [{ name: 'C', value: '1.0' }, { name: 'kernel', value: 'rbf' }, { name: 'gamma', value: 'scale' }]},
-    { name: 'randomforest', params: [{ name: 'n_estimators', value: '100' }, { name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }]},
-    { name: 'gradientboosting', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }]},
-    { name: 'xgboost', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }, { name: 'eval_metric', value: 'logloss' }]},
-    { name: 'knn', params: [{ name: 'n_neighbors', value: '5' }]},
-    { name: 'decisiontree', params: [{ name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }]}
+    { name: 'logistic', params: [{ name: 'C', value: '1.0' }, { name: 'penalty', value: 'l2' }, { name: 'solver', value: 'lbfgs' }], description: 'Best for simple binary classification with linear data.' },
+    { name: 'svc', params: [{ name: 'C', value: '1.0' }, { name: 'kernel', value: 'rbf' }, { name: 'gamma', value: 'scale' }], description: 'Good for small-to-medium datasets with clear margins (linear or kernel-based). Handles nonlinearity well.' },
+    { name: 'randomforest', params: [{ name: 'n_estimators', value: '100' }, { name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Robust general-purpose classifier, handles nonlinearity well. Good for large datasets.'},
+    { name: 'gradientboosting', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }], description: 'High accuracy for tabular data, great with imbalanced datasets.'},
+    { name: 'xgboost', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }, { name: 'eval_metric', value: 'logloss' }], description: 'Best for structured data, optimized performance.'},
+    { name: 'knn', params: [{ name: 'n_neighbors', value: '5' }], description: 'Works well for small, low-dimensional data with local patterns. Prone to noise and high dimensions.'},
+    { name: 'decisiontree', params: [{ name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Simple and interpretable, but prone to overfitting; good for small datasets.'},
 ];
 
 const numericalModels = [
-    { name: 'poly', params: [{ name: 'degree', value: '2' }] },
-    { name: 'linear', params: [] },
-    { name: 'ridge', params: [{ name: 'alpha', value: '1.0' }] },
-    { name: 'lasso', params: [{ name: 'alpha', value: '1.0' }] },
-    { name: 'elasticnet', params: [{ name: 'alpha', value: '1.0' }, { name: 'l1_ratio', value: '0.5' }]},
-    { name: 'svr', params: [{ name: 'C', value: '1.0' }, { name: 'kernel', value: 'rbf' }, { name: 'gamma', value: 'scale' }]}
+    { name: 'poly', params: [{ name: 'degree', value: '2' }], description: 'Accurate for nonlinear relationships when the true trend is polynomial (but prone to overfitting with high degrees).' },
+    { name: 'linear', params: [], description: 'Best for simple, linear relationships with low multicollinearity and no overfitting.' },
+    { name: 'ridge', params: [{ name: 'alpha', value: '1.0' }], description: 'Better than linear when multicollinearity exists; good for many correlated features.' },
+    { name: 'lasso', params: [{ name: 'alpha', value: '1.0' }], description: 'Best when feature selection is needed (sparse data) and some coefficients should be zero.' },
+    { name: 'elasticnet', params: [{ name: 'alpha', value: '1.0' }, { name: 'l1_ratio', value: '0.5' }], description: 'Combines Ridge & Lasso benefits; best when both multicollinearity and feature selection are needed.'},
+    { name: 'svr', params: [{ name: 'C', value: '1.0' }, { name: 'kernel', value: 'rbf' }, { name: 'gamma', value: 'scale' }], description: 'Effective for complex, nonlinear relationships, especially with kernel tricks for high-dimensional data. Good for small-to-medium datasets.' },
 ];
 
 // ==============================================
@@ -443,28 +449,23 @@ function renderStandardScalingSection(columns) {
  * Render train/test split section
  */
 function renderTrainTestSplitSection() {
-    // Get current values or use defaults if not set
-    const currentTrainSize = document.getElementById('trainSize')?.value || 80;
-    const currentTestSize = document.getElementById('testSize')?.value || 20;
-    const currentRandomSeed = document.getElementById('randomSeed')?.value || 42;
-
     return `
         <div class="analysis-subsection">
             <h4>Train/Test Split Configuration</h4>
             <div class="split-config">
                 <div class="split-control">
                     <label>Training Size (%):</label>
-                    <input type="number" id="trainSize" min="1" max="99" value="${currentTrainSize}" class="split-input">
+                    <input type="number" id="trainSize" min="1" max="99" value="80" class="split-input">
                     <button class="split-adjust" data-direction="up" data-target="trainSize">↑</button>
                     <button class="split-adjust" data-direction="down" data-target="trainSize">↓</button>
                 </div>
                 <div class="split-control">
                     <label>Test Size (%):</label>
-                    <input type="number" id="testSize" min="1" max="99" value="${currentTestSize}" class="split-input" readonly>
+                    <input type="number" id="testSize" min="1" max="99" value="20" class="split-input" readonly>
                 </div>
                 <div class="split-control">
                     <label>Random Seed:</label>
-                    <input type="number" id="randomSeed" value="${currentRandomSeed}" class="split-input">
+                    <input type="number" id="randomSeed" value="42" class="split-input">
                 </div>
             </div>
         </div>
@@ -550,11 +551,11 @@ function buildModelSelectionSection(isCategorical, statsData) {
     
     return `
         <div class="model-selection-section">
-            <h4>Select ${modelType} Model</h4>
             <div class="model-type-info">
                 ${isLowCardNumeric ? `Treating "${selectedPredictionColumn}" as ${finalIsCategorical ? 'categorical' : 'numeric'}` : ''}
             </div>
             ${renderModelOptions(models, modelType)}
+            ${renderCrossValidationOptions()}
             ${renderModelParameters(models)}
         </div>
     `;
@@ -564,26 +565,36 @@ function buildModelSelectionSection(isCategorical, statsData) {
  * Render model options
  */
 function renderModelOptions(models, modelType) {
-    let options = '<div class="model-options-row">';
+    let options = `
+        <div class="model-selection-container">
+            <h4>Select ${modelType} Model</h4>
+            <div class="model-options-grid">
+    `;
     
-    models.forEach((model, index) => {
+    models.forEach(model => {
+        const isDisabled = model.name.toLowerCase() === 'xgboost'; // Add other disabled models here
+        const disabledClass = isDisabled ? 'disabled-model-option' : '';
+        const disabledAttr = isDisabled ? 'disabled' : '';
+        
         options += `
-            <div class="model-option">
+            <div class="model-option-box ${disabledClass}">
                 <label>
                     <input type="radio" name="modelType" value="${model.name}" 
                            data-model-type="${modelType}"
-                           ${selectedModel === model.name ? 'checked' : ''}>
-                    ${model.name}
+                           ${selectedModel === model.name ? 'checked' : ''}
+                           ${disabledAttr}>
+                    <span class="model-name">${model.name}</span>
+                    ${isDisabled ? '<span class="model-unavailable">(Temporarily unavailable)</span>' : ''}
+                    <span class="model-description">${model.description || ''}</span>
                 </label>
             </div>
         `;
-        
-        if ((index + 1) % 4 === 0 && index + 1 < models.length) {
-            options += '</div><div class="model-options-row">';
-        }
     });
     
-    options += '</div>';
+    options += `
+            </div>
+        </div>
+    `;
     return options;
 }
 
@@ -591,7 +602,7 @@ function renderModelOptions(models, modelType) {
  * Render model parameters
  */
 function renderModelParameters(models) {
-    let paramsHTML = '';
+    let paramsHTML = '<div class="model-params-section">';
     
     models.forEach(model => {
         if (model.params.length > 0) {
@@ -607,6 +618,7 @@ function renderModelParameters(models) {
         }
     });
     
+    paramsHTML += '</div>';
     return paramsHTML;
 }
 
@@ -648,7 +660,7 @@ function renderModelParameterInputs(model) {
         inputs += `
             <div class="param-control">
                 <label>${param.name}:</label>
-                <input type="text" class="param-input" 
+                <input type="text" class="cv-options" 
                        data-model="${model.name}" 
                        data-param="${param.name}" 
                        value="${paramValue}"
@@ -807,6 +819,7 @@ function setupAnalysisControls(statsData) {
     setupModelSelectionControls();
     setupParameterInputControls();
     setupRunAnalysisButton(statsData);
+    setupCrossValidationControls();
     
     // Set up clear results button only if it exists and is not disabled
     const clearResultsBtn = document.getElementById('clearResults');
@@ -1051,11 +1064,6 @@ function setupRunAnalysisButton(statsData) {
     if (!runAnalysisBtn) return;
 
     runAnalysisBtn.addEventListener('click', async function() {
-        // Store current values before any potential re-render
-        const currentTrainSize = document.getElementById('trainSize')?.value || 80;
-        const currentTestSize = document.getElementById('testSize')?.value || 20;
-        const currentRandomSeed = document.getElementById('randomSeed')?.value || 42;
-
         // Disable the button and show loading state
         runAnalysisBtn.disabled = true;
         runAnalysisBtn.textContent = 'Processing...';
@@ -1067,14 +1075,6 @@ function setupRunAnalysisButton(statsData) {
 
             const analysisConfig = prepareAnalysisConfig(statsData);
             const analysisResults = await runAnalysis(analysisConfig);
-            
-            // Restore the values after analysis
-            if (document.getElementById('trainSize')) {
-                document.getElementById('trainSize').value = currentTrainSize;
-                document.getElementById('testSize').value = currentTestSize;
-                document.getElementById('randomSeed').value = currentRandomSeed;
-            }
-            
             displayAnalysisResults(analysisResults);
         } catch (error) {
             handleError('Error during analysis:', error);
@@ -1117,15 +1117,6 @@ function validateAnalysisInputs(statsData) {
  * Prepare analysis configuration object
  */
 function prepareAnalysisConfig(statsData) {
-    // Get current values or use defaults
-    const trainSizeInput = document.getElementById('trainSize');
-    const testSizeInput = document.getElementById('testSize');
-    const randomSeedInput = document.getElementById('randomSeed');
-    
-    const trainSize = trainSizeInput ? parseInt(trainSizeInput.value) : 80;
-    const testSize = testSizeInput ? parseInt(testSizeInput.value) : 20;
-    const randomSeed = randomSeedInput ? parseInt(randomSeedInput.value) : 42;
-
     const encoderColumns = statsData.dtype_info.filter(col => col.type === 'object' || col.type === 'category' || col.unique_values <= 5);
     const isCategorical = encoderColumns.some(col => col.column === selectedPredictionColumn) || 
                          selectedOneHotColumns.has(selectedPredictionColumn);
@@ -1138,16 +1129,38 @@ function prepareAnalysisConfig(statsData) {
         params = { ...modelDefaultParams[selectedModel] };
     }
     
+    // Get CV parameters
+    const cvMethod = document.querySelector('input[name="cvMethod"]:checked').value;
+    let cvParams = {};
+    
+    if (cvState.method === 'kfold') {
+        cvParams = {
+            method: 'kfold',
+            n_splits: cvState.kfoldSplits
+        };
+    } else if (cvState.method === 'shufflesplit') {
+        cvParams = {
+            method: 'shufflesplit',
+            n_splits: cvState.shuffleSplits,
+            test_size: cvState.shuffleTestSize / 100
+        };
+    } else if (cvMethod === 'loo') {
+        cvParams = {
+            method: 'loo'
+        };
+    }
+
     return {
         df: currentDF,
         prediction_column: selectedPredictionColumn,
         onehot_columns: Array.from(selectedOneHotColumns),
         standardscale_columns: Array.from(selectedStandardScaleColumns),
-        train_size: trainSize,
-        test_size: testSize,
-        random_seed: randomSeed,
+        train_size: parseInt(document.getElementById('trainSize').value) / 100,
+        test_size: parseInt(document.getElementById('testSize').value) / 100,
+        random_seed: parseInt(document.getElementById('randomSeed').value),
         model: selectedModel,
-        model_params: params
+        model_params: params,
+        cross_validation: cvParams
     };
 }
 
@@ -1189,7 +1202,7 @@ async function displayAnalysisResults(data) {
         // Create results container for this specific result
         const resultsContainer = document.createElement('div');
         resultsContainer.className = 'analysis-results';
-        resultsContainer.innerHTML = '<h3>Analysis Results</h3>';
+        resultsContainer.innerHTML = '';
         
         // Add visualization if available
         if (data.image_data) {
@@ -1227,11 +1240,14 @@ function createVisualizationCard(imageData) {
     imgCard.className = 'visualization-card';
     imgCard.innerHTML = `
         <h4>Analysis Visualization</h4>
-        <img src="data:image/png;base64,${imageData}" alt="Analysis Result">
+        <div class="thumbnail-container">
+            <img src="data:image/png;base64,${imageData}" alt="Analysis Result" class="thumbnail-image">
+        </div>
     `;
     
     // Make image clickable for fullscreen
-    imgCard.querySelector('img').addEventListener('click', function() {
+    const thumbnail = imgCard.querySelector('img');
+    thumbnail.addEventListener('click', function() {
         createImageOverlay(this.src, this.alt);
     });
     
@@ -1261,6 +1277,81 @@ function createMetricsDisplay(metrics) {
     return metricsDiv;
 }
 
+function renderCrossValidationOptions() {
+    return `
+        <div class="cv-options">
+            <h4>Cross Validation</h4>
+            <div class="cv-option">
+                <label>
+                    <input type="radio" name="cvMethod" value="none" 
+                           ${cvState.method === 'none' ? 'checked' : ''}>
+                    None (simple train/test split)
+                </label>
+            </div>
+            <div class="cv-option">
+                <label>
+                    <input type="radio" name="cvMethod" value="kfold"
+                           ${cvState.method === 'kfold' ? 'checked' : ''}>
+                    K-Fold
+                    <input type="number" id="kfoldSplits" class="cv-param" 
+                           min="2" max="20" value="${cvState.kfoldSplits}"
+                           ${cvState.method !== 'kfold' ? 'disabled' : ''}>
+                    splits
+                </label>
+            </div>
+            <div class="cv-option">
+                <label>
+                    <input type="radio" name="cvMethod" value="shufflesplit"
+                           ${cvState.method === 'shufflesplit' ? 'checked' : ''}>
+                    Shuffle Split
+                    <input type="number" id="shuffleSplits" class="cv-param" 
+                           min="1" max="20" value="${cvState.shuffleSplits}"
+                           ${cvState.method !== 'shufflesplit' ? 'disabled' : ''}>
+                    splits,
+                    <input type="number" id="shuffleTestSize" class="cv-param" 
+                           min="1" max="99" value="${cvState.shuffleTestSize}"
+                           ${cvState.method !== 'shufflesplit' ? 'disabled' : ''}>
+                    % test size
+                </label>
+            </div>
+            <div class="cv-option">
+                <label>
+                    <input type="radio" name="cvMethod" value="loo" disabled>
+                    Leave-One-Out (LOO) (CPU expensive, disabled)
+                </label>
+            </div>
+        </div>
+    `;
+}
+
+function setupCrossValidationControls() {
+    // Enable/disable parameter inputs based on CV selection
+    document.querySelectorAll('input[name="cvMethod"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Update state
+            cvState.method = this.value;
+            
+            // Enable/disable parameter inputs
+            document.getElementById('kfoldSplits').disabled = this.value !== 'kfold';
+            document.getElementById('shuffleSplits').disabled = this.value !== 'shufflesplit';
+            document.getElementById('shuffleTestSize').disabled = this.value !== 'shufflesplit';
+        });
+    });
+
+    // Update state when parameter values change
+    document.getElementById('kfoldSplits')?.addEventListener('change', function() {
+        cvState.kfoldSplits = parseInt(this.value);
+    });
+    
+    document.getElementById('shuffleSplits')?.addEventListener('change', function() {
+        cvState.shuffleSplits = parseInt(this.value);
+    });
+    
+    document.getElementById('shuffleTestSize')?.addEventListener('change', function() {
+        cvState.shuffleTestSize = parseInt(this.value);
+    });
+}
+
 /**
  * Reset all internal state variables when a new CSV file is uploaded
  */
@@ -1271,6 +1362,12 @@ function resetState() {
     selectedModel = '';
     modelParams = {};
     modelDefaultParams = {};
+    cvState = {
+    method: 'none',
+    kfoldSplits: 5,
+    shuffleSplits: 5,
+    shuffleTestSize: 20
+};
     
     // Reinitialize modelDefaultParams with default values
     [...categoricalModels, ...numericalModels].forEach(model => {
@@ -1286,71 +1383,87 @@ function resetState() {
 // ==============================================
 
 /**
- * Create fullscreen image overlay with responsive sizing
+ * Create fullscreen image overlay
  */
 function createImageOverlay(src, alt) {
-    // Add overflow hidden to body to prevent scrolling
-    document.body.classList.add('overlay-active');
-    
-    const overlay = document.createElement('div');
-    overlay.className = 'plot-overlay';
-    
-    const content = document.createElement('div');
-    content.className = 'plot-overlay-content';
-    
-    const closeBtn = document.createElement('span');
-    closeBtn.className = 'close-overlay';
-    closeBtn.innerHTML = '&times;';
-    
-    const img = document.createElement('img');
+    // Create image first and wait for it to load
+    const img = new Image();
     img.src = src;
     img.alt = alt;
     
-    // Apply responsive image sizing
+    // Create overlay structure but keep it hidden
+    const overlay = document.createElement('div');
+    overlay.className = 'plot-overlay';
+    overlay.style.opacity = '0'; // Start transparent
+    overlay.style.transition = 'opacity 0.3s ease'; // Smooth fade-in
+
+    const content = document.createElement('div');
+    content.className = 'plot-overlay-content';
+    content.style.visibility = 'hidden'; // Hide content initially
+
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'close-overlay';
+    closeBtn.innerHTML = '×';
+
+    // Apply image styles
     img.style.maxWidth = '100%';
-    img.style.maxHeight = 'calc(100vh - 60px)'; // Account for padding and close button
+    img.style.maxHeight = '100%';
     img.style.objectFit = 'contain';
     img.style.display = 'block';
-    
-    // Build overlay
+
     content.appendChild(closeBtn);
     content.appendChild(img);
     overlay.appendChild(content);
-    document.body.appendChild(overlay);
-    
-    // Close functionality
-    const closeOverlay = () => {
-        document.body.removeChild(overlay);
-        document.body.classList.remove('overlay-active');
-        window.removeEventListener('resize', handleResize);
+
+    img.onload = function() {
+        // Adjust for portrait images
+        if (img.naturalHeight > img.naturalWidth) {
+            content.style.maxWidth = `${(img.naturalWidth / img.naturalHeight) * 90}vh`;
+        }
+        
+        // Add to DOM and make visible
+        document.body.classList.add('overlay-active');
+        document.body.appendChild(overlay);
+        
+        // Trigger fade-in after a brief timeout to ensure layout is ready
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+            content.style.visibility = 'visible';
+        }, 10);
     };
-    
+
+    // Error handling in case image fails to load
+    img.onerror = function() {
+        console.error('Failed to load overlay image');
+        content.innerHTML = '<div class="image-error">Failed to load image</div>';
+        document.body.appendChild(overlay);
+        overlay.style.opacity = '1';
+    };
+
+    function closeOverlay() {
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            if (overlay.parentNode) {
+                document.body.removeChild(overlay);
+            }
+            document.body.classList.remove('overlay-active');
+            document.removeEventListener('keydown', escClose);
+        }, 300); // Match transition duration
+    }
+
     closeBtn.addEventListener('click', closeOverlay);
-    overlay.addEventListener('click', (e) => {
+    overlay.addEventListener('click', function(e) {
         if (e.target === overlay) {
             closeOverlay();
         }
     });
-    
-    // Close with ESC key
-    document.addEventListener('keydown', function escClose(e) {
+
+    function escClose(e) {
         if (e.key === 'Escape') {
             closeOverlay();
-            document.removeEventListener('keydown', escClose);
         }
-    });
-    
-    // Handle window resize
-    const handleResize = () => {
-        // Adjust image size based on current viewport
-        const maxHeight = window.innerHeight - 60; // Account for padding
-        img.style.maxHeight = `${maxHeight}px`;
-    };
-    
-    window.addEventListener('resize', handleResize);
-    
-    // Initial size calculation
-    handleResize();
+    }
+    document.addEventListener('keydown', escClose);
 }
 
 /**

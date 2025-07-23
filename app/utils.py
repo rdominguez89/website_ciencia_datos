@@ -6,7 +6,7 @@ import io
 import base64
 import os
 from flask import send_file
-from .models import add_watermark_fig, add_watermark_fig_ax
+from .analyze_supervised import add_watermark_fig, add_watermark_fig_ax
 
 
 matplotlib.use('Agg')

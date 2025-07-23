@@ -9,7 +9,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 from werkzeug.exceptions import HTTPException
 from .utils import allowed_file, load_dataframe, get_stats_summary, clean_dataframe, create_visualizations_function, remove_outliers_function, create_correlation_plots_function, save_dataframe
-from .models import analyze_data
+from .analyze_supervised import analyze_data
 from flask_cors import CORS
 
 bp = Blueprint('main', __name__)
