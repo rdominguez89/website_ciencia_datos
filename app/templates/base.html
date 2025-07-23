@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Flask App{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .go-to-top {
             position: fixed;
@@ -31,6 +32,33 @@
         .go-to-top::after {
             content: '↑';
         }
+        
+        .github-corner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            display: block; /* Always visible */
+        }
+        
+        .github-corner:hover {
+            opacity: 1;
+        }
+        
+        .github-corner i {
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -39,9 +67,13 @@
     </div>
     
     <div class="go-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"></div>
+    
+    <a href="https://github.com/rdominguez89/website_ciencia_datos" target="_blank" class="github-corner">
+        <i class="fab fa-github"></i>
+    </a>
 
     <script>
-        // Show/hide the button based on scroll position
+        // Only control the go-to-top button visibility
         window.onscroll = function() {
             var button = document.querySelector('.go-to-top');
             if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
