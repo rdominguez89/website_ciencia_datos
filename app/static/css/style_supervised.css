@@ -320,26 +320,6 @@ tr:nth-child(even) {
     background: #4a5568;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .container {
-        padding: 1rem;
-    }
-    
-    .upload-section {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .data-tabs {
-        flex-wrap: wrap;
-    }
-    
-    .visualization-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 .numeric-type-toggle {
     margin: 15px 0;
     padding: 10px;
@@ -662,4 +642,45 @@ input:focus, select:focus, textarea:focus {
 @keyframes loading {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    .upload-section {
+        flex-direction: column;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+    
+    th, td {
+        padding: 6px 8px; /* Slightly reduced padding */
+        font-size: 0.85em; /* Slightly smaller font */
+    }
+    
+    /* Optional: Add horizontal scroll indicator */
+    table::after {
+        content: "→";
+        position: absolute;
+        right: 10px;
+        bottom: 5px;
+        color: #4299e1;
+        font-size: 1.2em;
+    }
+
+    .data-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .visualization-grid {
+        grid-template-columns: 1fr;
+    }
 }
