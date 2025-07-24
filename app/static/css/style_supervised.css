@@ -179,6 +179,7 @@ table {
     width: 100%;
     margin: 20px 0;
     background-color: #1a202c;
+    white-space: nowrap;
 }
 
 table, th, td {
@@ -198,6 +199,46 @@ th {
 
 tr:nth-child(even) {
     background-color: #2d3748;
+}
+
+/* Columns-to-use */
+/* Replace the existing .options-row and .column-option styles with these: */
+.options-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.column-option {
+    flex: 1 0 calc(33.333% - 10px); /* 3 columns per row */
+    min-width: 200px;
+    padding: 8px;
+    background: #2d3748;
+    border-radius: 4px;
+    border: 1px solid #4a5568;
+    display: flex;
+    align-items: center;
+}
+
+.column-option label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.column-option input[type="checkbox"],
+.column-option input[type="radio"] {
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.column-option .type-indicator {
+    margin-left: auto;
+    font-size: 0.95em;
+    color: #a0aec0;
+    padding-left: 8px;
 }
 
 /* Visualizations */
@@ -647,6 +688,10 @@ input:focus, select:focus, textarea:focus {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .column-option {
+        flex: 1 0 calc(50% - 10px);
+    }
+
     .container {
         padding: 1rem;
     }

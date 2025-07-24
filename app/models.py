@@ -13,10 +13,12 @@ def get_numeric_model(name, inputs):
     """Create and configure a numeric prediction model pipeline."""
     if len(inputs[0]) > 0 or len(inputs[1]) > 0:
         preprocessor = ColumnTransformer(
-            transformers=[
-                ('cat', OneHotEncoder(drop='first'), inputs[0]),
-                ('num', StandardScaler(), inputs[1])
-            ])
+        transformers=[
+            ('cat', OneHotEncoder(drop='first', sparse_output=False, handle_unknown='ignore'), inputs[0]),  # ← sparse_output=False
+            ('num', StandardScaler(), inputs[1])
+        ],
+        verbose_feature_names_out=False  # Cleaner column names
+    ).set_output(transform="pandas")
     else:
         preprocessor = None
     
@@ -110,7 +112,7 @@ def get_numeric_model(name, inputs):
     else:
         raise ValueError(f"model '{name}' no recognized")
     
-    return model
+    return model, preprocessor
 
 def get_categorical_model(name, inputs):
     """Create and configure a categorical prediction model pipeline."""

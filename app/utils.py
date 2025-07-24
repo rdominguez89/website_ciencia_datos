@@ -20,7 +20,7 @@ def load_dataframe(file):
     df = pd.read_csv(file)
     if len(df) > 1000:
         raise ValueError('File exceeds 1000 row limit')
-    if len(df.columns) > 10:
+    if len(df.columns) > 13:
         raise ValueError('File exceeds 10 column limit')
     return df
 

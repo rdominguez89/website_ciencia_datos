@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 import seaborn as sns
 from sklearn.model_selection import train_test_split, KFold, ShuffleSplit, LeaveOneOut, cross_validate
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, confusion_matrix, ConfusionMatrixDisplay, make_scorer
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 import io
@@ -22,8 +22,12 @@ def analyze_data(df, data):
     name = data['model']
     inputs = [encoder_columns, standar_scale_columns, random_state, data['model_params']]
     cv_config = data['cross_validation'] if len(data['cross_validation']) > 0 else None
+    columns_to_use = data['columns_to_use']
 
-    X = df.drop(prediction_column, axis=1).copy()
+
+    columns_to_drop = [col for col in df.columns if col not in columns_to_use]
+    columns_to_drop.append(prediction_column)
+    X = df.drop(columns_to_drop, axis=1).copy()
     
     # Set modern style with seaborn
     # sns.set_style("whitegrid")
@@ -78,50 +82,69 @@ def analyze_data(df, data):
                     pad=20, fontsize=14, weight='bold')
             
     else:
-        model = get_numeric_model(name, inputs)
-        y = df[prediction_column].copy()
         if prediction_column in encoder_columns: encoder_columns.remove(prediction_column)
         if prediction_column in standar_scale_columns: standar_scale_columns.remove(prediction_column)
+        model, preprocesor = get_numeric_model(name, inputs)
+        y = df[prediction_column].copy()
+        scaler = StandardScaler()
+        y = scaler.fit_transform(y.values.reshape(-1, 1))
         aux_text = get_aux_text(inputs[3],encoder_columns,standar_scale_columns, prediction_column,X.columns)
         if cv_config is not None:
-            # cv_results = perform_cross_validation(model, X, y, cv_config, random_state, classification=False)
-            #  # Create a figure with subplots
-            # fig = plt.figure(figsize=(5, 8))
-            # gs = gridspec.GridSpec(2, 1, height_ratios=[2, 1])
-            # # First subplot for actual vs predicted
-            # ax1 = plt.subplot(gs[0])
-            # plot_actual_vs_predicted(cv_results, name, prediction_column, aux_text, ax=ax1)
-            # # Second subplot for CV results
-            # ax2 = plt.subplot(gs[1])
-            # plot_cv_results(cv_results, ax=ax2)
-            # fig = add_watermark_fig(fig,xs=[0.2])
-
             cv_results = perform_cross_validation(model, X, y, cv_config, random_state, classification=False)
              # Create a figure with subplots
-            fig = plt.figure(figsize=(6,6))
-            ax = plt.gca()
-            plot_actual_vs_predicted(cv_results, name, prediction_column, aux_text, ax=ax)
+            fig = plt.figure(figsize=(6, 8))
+            gs = gridspec.GridSpec(2, 1, height_ratios=[2, 1])
+            # First subplot for actual vs predicted
+            ax1 = plt.subplot(gs[0])
+            plot_actual_vs_predicted(cv_results, name, prediction_column, aux_text, test_size, random_state, scaler, ax=ax1)
+            # Second subplot for CV results
+            ax2 = plt.subplot(gs[1])
+            plot_cv_results(cv_results, ax=ax2)
             fig = add_watermark_fig(fig,xs=[0.2])
+
+            # cv_results = perform_cross_validation(model, X, y, cv_config, random_state, classification=False)
+            #  # Create a figure with subplots
+            # fig = plt.figure(figsize=(6,6))
+            # ax = plt.gca()
+            # plot_actual_vs_predicted(cv_results, name, prediction_column, aux_text, test_size, random_state, ax=ax)
+            # fig = add_watermark_fig(fig,xs=[0.2])
 
         else:
             fig = plt.figure(figsize=(6, 6))
             fig = add_watermark_fig(fig,xs=[0.3])
+            if preprocesor and len(encoder_columns) > 0:
+                X = preprocesor.fit_transform(X)
+            inputs_cat = [col for col in X.columns 
+                    if not any(num_col in col for num_col in standar_scale_columns)]
+            inputs[0] = inputs_cat
+            model, preprocesor = get_numeric_model(name, inputs)
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
             disc, y_pred = get_resultados_model_numeric(X_train, X_test, y_train, y_test, model)
             # Enhanced scatter plot
-            plt.scatter(y_test, y_pred, alpha=0.6, s=80, c='#1f77b4', edgecolors='w', linewidth=0.5)
-            plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], '--', color='crimson', linewidth=2)
+            y_test_inverse = scaler.inverse_transform(y_test.reshape(-1, 1)).ravel()
+            y_pred_inverse = scaler.inverse_transform(y_pred.reshape(-1, 1)).ravel()
+            plt.scatter(y_test_inverse, y_pred_inverse, alpha=0.6, s=80, c='#1f77b4', edgecolors='w', linewidth=0.5)
+            #plt.scatter(y_test, y_pred, alpha=0.6, s=80, c='#1f77b4', edgecolors='w', linewidth=0.5)
+            plt.plot([min(y_test_inverse), max(y_pred_inverse)], [min(y_test_inverse), max(y_pred_inverse)], '--', color='crimson', linewidth=2)
             # plt.title(f'{prediction_column} Actual vs Predicted\n{name} {aux_text}\nMSE: {disc[0]:.2f} | RMSE: {disc[1]:.2f} | MAE: {disc[2]:.2f} | R²: {disc[3]:.2f}', 
             #         pad=20, fontsize=16, weight='bold')
-            plt.title(f'{prediction_column} Actual vs Predicted\n{name} {aux_text}', pad=20, fontsize=16, weight='bold')
+            #plt.title(f'{prediction_column} Actual vs Predicted\n{name} {aux_text}', pad=20, fontsize=16, weight='bold')
             ax = plt.gca()
+            # Main title part
+            ax.set_title(f'{prediction_column} Actual vs Predicted', 
+                        fontsize=12, weight='bold', loc='center')
+
+            # Add subtitle
+            ax.text(0.96, 0.04, f'{name} {aux_text}\nTraining: {(100-100*test_size):.0f}% | Test: {100*test_size:.0f}% | seed: {random_state}', 
+            transform=ax.transAxes, fontsize=10, verticalalignment='bottom', horizontalalignment='right',
+            bbox=dict(facecolor='white', alpha=0.5, pad=4))
             metrics_text = (f"MSE: {disc[0]:.2f}\n"
                 f"RMSE: {disc[1]:.2f}\n"
                 f"MAE: {disc[2]:.2f}\n"
                 f"R²: {disc[3]:.2f}")
             ax.text(0.05, 0.95, metrics_text, transform=ax.transAxes,
             fontsize=10, fontweight='bold', verticalalignment='top',
-            bbox=dict(facecolor='white', alpha=0.8))
+            bbox=dict(facecolor='white', alpha=0.5))
             ax.tick_params(axis='both', rotation=45)
             plt.xlabel(f'{prediction_column}\nActual Values', fontsize=14)
             plt.ylabel(f'{prediction_column}\nPredicted Values', fontsize=14)
@@ -140,7 +163,7 @@ def analyze_data(df, data):
         'image_data': base64.b64encode(buffer.getvalue()).decode('utf-8')
     }
 
-def plot_actual_vs_predicted(cv_results, name, prediction_column, aux_text, ax=None):
+def plot_actual_vs_predicted(cv_results, name, prediction_column, aux_text, test_size, random_state, scaler, ax=None):
     """Plot actual vs predicted values for regression with CV-method-specific styling."""
     if ax is None:
         fig, ax = plt.subplots(figsize=(8, 8))
@@ -161,32 +184,34 @@ def plot_actual_vs_predicted(cv_results, name, prediction_column, aux_text, ax=N
         'linewidth': 0.5
     }
 
+    y_true_reverse = scaler.inverse_transform(y_true.reshape(-1, 1)).ravel()
+    y_pred_reverse = scaler.inverse_transform(y_pred.reshape(-1, 1)).ravel()
     # Handle each CV method differently
     if cv_name == 'kfold':
         # KFold - color by fold
         colors = plt.cm.get_cmap('tab10', min(n_splits, 10))  # Max 10 colors
-        fold_size = len(y_true) // n_splits
+        fold_size = len(y_true_reverse) // n_splits
         
         for fold in range(n_splits):
             start = fold * fold_size
             end = (fold + 1) * fold_size if fold < n_splits - 1 else None
-            ax.scatter(y_true[start:end], y_pred[start:end],
+            ax.scatter(y_true_reverse[start:end], y_pred_reverse[start:end],
                       color=colors(fold % 10),  # Cycle if >10 folds
                       label=f'Fold {fold + 1}',
                       **base_style)
         
     elif cv_name == 'shufflesplit':
         # ShuffleSplit - single color (points may overlap across folds)
-        ax.scatter(y_true, y_pred, color='#1f77b4', label='Predictions', **base_style)
+        ax.scatter(y_true_reverse, y_pred_reverse, color='#1f77b4', label='Predictions', **base_style)
         
     else:  # LOO
         # LeaveOneOut - single color (each point is its own fold)
-        ax.scatter(y_true, y_pred, color='#1f77b4', label='Predictions', **base_style)
-        n_splits = len(y_true)  # Override to show sample count
+        ax.scatter(y_true_reverse, y_pred_reverse, color='#1f77b4', label='Predictions', **base_style)
+        n_splits = len(y_true_reverse)  # Override to show sample count
 
     # Ideal prediction line
-    min_val = min(np.min(y_true), np.min(y_pred))
-    max_val = max(np.max(y_true), np.max(y_pred))
+    min_val = min(np.min(y_true_reverse), np.min(y_pred_reverse))
+    max_val = max(np.max(y_true_reverse), np.max(y_pred_reverse))
     ax.plot([min_val, max_val], [min_val, max_val],
             '--', color='crimson', linewidth=2, label='Ideal')
 
@@ -201,7 +226,7 @@ def plot_actual_vs_predicted(cv_results, name, prediction_column, aux_text, ax=N
                    f"MAE: {mae:.2f}\nR²: {r2:.2f}")
     ax.text(0.05, 0.95, metrics_text, transform=ax.transAxes,
             fontsize=10, fontweight='bold', verticalalignment='top',
-            bbox=dict(facecolor='white', alpha=0.8, pad=4))
+            bbox=dict(facecolor='white', alpha=0.5, pad=4))
 
     # Titles and labels
     method_map = {
@@ -209,11 +234,17 @@ def plot_actual_vs_predicted(cv_results, name, prediction_column, aux_text, ax=N
         'shufflesplit': f'ShuffleSplit (n_splits={n_splits}, test_size={cv_results["test_size"]})',
         'loo': f'LeaveOneOut (n_samples={n_splits})'
     }
-    ax.set_title(f'{prediction_column} Actual vs Predicted\n{method_map[cv_name]}\n{name} {aux_text}',
-                pad=20, fontsize=12, weight='bold')
+    # Main title part
+    ax.set_title(f'{prediction_column} Actual vs Predicted', 
+                fontsize=12, weight='bold', loc='center')
+
+    # Add subtitle
+    ax.text(0.96, 0.04, f'{method_map[cv_name]}\n{name} {aux_text}\nTraining: {(100-100*test_size):.0f}% | Test: {100*test_size:.0f}% | seed: {random_state}', 
+        transform=ax.transAxes, fontsize=10, verticalalignment='bottom', horizontalalignment='right',
+        bbox=dict(facecolor='white', alpha=0.4, pad=4))
     ax.set_xlabel(f'{prediction_column}\nActual Values', fontsize=12)
     ax.set_ylabel(f'{prediction_column}\nPredicted Values', fontsize=12)
-    ax.tick_params(axis='x', rotation=45)
+    ax.tick_params(axis='both', rotation=45)
     ax.grid(True, linestyle='--', alpha=0.7)
 
     return 

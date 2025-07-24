@@ -15,6 +15,12 @@ let cvState = {
     shuffleSplits: 5,
     shuffleTestSize: 20
 };
+let selectedColumns = new Set();
+let splitSettings = {
+    trainSize: 80,
+    testSize: 20,
+    randomSeed: 42
+};
 
 // Model definitions
 const categoricalModels = [
@@ -75,7 +81,7 @@ function initializeModelDefaults() {
  * Handle file upload process
  */
 async function handleFileUpload() {
-    // Reset state before processing new file
+    // Only reset state for new uploads
     resetState();
 
     const file = validateFileInput();
@@ -139,6 +145,12 @@ async function processData(data) {
 
     try {
         const statsData = await getDataStatistics(data);
+        
+        // Initialize selectedColumns with all columns by default
+        statsData.dtype_info.forEach(col => {
+            selectedColumns.add(col.column);
+        });
+        
         renderDataDisplay(statsData);
     } catch (error) {
         handleError('Error processing data:', error);
@@ -186,13 +198,9 @@ function renderDataDisplay(statsData) {
         initializeColumnSelections();
     }
     
-    // Check for null values, with fallback to avoid undefined errors
     const hasNullValues = statsData.stats?.total_null > 0;
-    
-    // Conditionally include the analysis section
     const analysisSectionHTML = hasNullValues ? '' : renderAnalysisSection(statsData);
     
-    // Preserve existing analysis results
     const dataPreview = document.getElementById('dataPreview');
     const existingResults = document.getElementById('analysis-results-area');
     
@@ -296,40 +304,38 @@ function renderDatasetOverview(statsData) {
  * Render analysis section
  */
 function renderAnalysisSection(statsData) {
-    // Categorize columns more precisely
-    const numericColumns = statsData.dtype_info.filter(col => 
+    // Get all columns for the include section
+    const allColumns = statsData.dtype_info;
+    
+    // Filter columns based on selection for other sections
+    const availableColumns = allColumns.filter(col => selectedColumns.has(col.column));
+    
+    // Categorize columns for the other sections
+    const numericColumns = availableColumns.filter(col => 
         (col.type === 'float64' || col.type === 'int64') && 
         !(col.unique_values <= 5 && selectedOneHotColumns.has(col.column))
     );
     
-    const categoricalColumns = statsData.dtype_info.filter(col => 
+    const categoricalColumns = availableColumns.filter(col => 
         col.type === 'object' || col.type === 'category' || 
         (col.unique_values <= 5 && selectedOneHotColumns.has(col.column))
     );
     
-    // Columns that could be treated as categorical (including low-cardinality numeric)
-    const potentialCategoricalColumns = statsData.dtype_info.filter(col => 
+    const potentialCategoricalColumns = availableColumns.filter(col => 
         col.type === 'object' || col.type === 'category' || col.unique_values <= 5
     );
     
-    // Columns that could be treated as numeric (excluding those already selected for one-hot)
-    const potentialNumericColumns = statsData.dtype_info.filter(col => 
+    const potentialNumericColumns = availableColumns.filter(col => 
         (col.type === 'float64' || col.type === 'int64') &&
         !selectedOneHotColumns.has(col.column)
     );
     
-    const allcolumns = [...numericColumns, ...categoricalColumns];
-    
     const isCategorical = selectedPredictionColumn ? 
         categoricalColumns.some(col => col.column === selectedPredictionColumn) : false;
 
-    // Check if analysis results exist
     const hasResults = !!document.getElementById('analysis-results-area');
-    
-    // Conditionally render model selection section only if a prediction target is selected
     const modelSelectionHTML = selectedPredictionColumn ? buildModelSelectionSection(isCategorical, statsData) : '';
 
-    // Conditionally render or disable the Clear Results button
     const clearButtonHTML = hasResults ? 
         `<button id="clearResults" class="action-button clear-button">Clear Results</button>` : 
         `<button id="clearResults" class="action-button clear-button" disabled>Clear Results</button>`;
@@ -338,7 +344,8 @@ function renderAnalysisSection(statsData) {
         <div class="data-section">
             <div class="analysis-section">
                 <h3>Data Analysis Setup</h3>
-                ${renderPredictionTargetSection(allcolumns, statsData)}
+                ${renderColumnSelectionSection(allColumns)}
+                ${renderPredictionTargetSection(availableColumns, statsData)}
                 ${renderOneHotEncodingSection(potentialCategoricalColumns)}
                 ${renderStandardScalingSection(potentialNumericColumns)}
                 ${renderTrainTestSplitSection()}
@@ -350,6 +357,26 @@ function renderAnalysisSection(statsData) {
             </div>
         </div>
     `;
+}
+
+function setupIncludeColumnControls(statsData) {
+    document.querySelectorAll('.include-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                selectedColumns.add(this.value);
+            } else {
+                selectedColumns.delete(this.value);
+                // Also remove from other selections if deselected
+                selectedOneHotColumns.delete(this.value);
+                selectedStandardScaleColumns.delete(this.value);
+                if (selectedPredictionColumn === this.value) {
+                    selectedPredictionColumn = null;
+                }
+            }
+            // Re-render to update UI
+            renderDataDisplay(statsData);
+        });
+    });
 }
 
 // ==============================================
@@ -455,17 +482,17 @@ function renderTrainTestSplitSection() {
             <div class="split-config">
                 <div class="split-control">
                     <label>Training Size (%):</label>
-                    <input type="number" id="trainSize" min="1" max="99" value="80" class="split-input">
+                    <input type="number" id="trainSize" min="1" max="99" value="${splitSettings.trainSize}" class="split-input">
                     <button class="split-adjust" data-direction="up" data-target="trainSize">↑</button>
                     <button class="split-adjust" data-direction="down" data-target="trainSize">↓</button>
                 </div>
                 <div class="split-control">
                     <label>Test Size (%):</label>
-                    <input type="number" id="testSize" min="1" max="99" value="20" class="split-input" readonly>
+                    <input type="number" id="testSize" min="1" max="99" value="${splitSettings.testSize}" class="split-input" readonly>
                 </div>
                 <div class="split-control">
                     <label>Random Seed:</label>
-                    <input type="number" id="randomSeed" value="42" class="split-input">
+                    <input type="number" id="randomSeed" value="${splitSettings.randomSeed}" class="split-input">
                 </div>
             </div>
         </div>
@@ -476,7 +503,7 @@ function renderTrainTestSplitSection() {
  * Render column options (generic for radio or checkbox)
  */
 // In renderColumnOptions function, update the input attributes:
-function renderColumnOptions(columns, type, inputType) {
+function renderColumnOptions(columns, type, inputType, isIncludeSection = false) {
     if (columns.length === 0) {
         return `<p>No columns available</p>`;
     }
@@ -484,41 +511,67 @@ function renderColumnOptions(columns, type, inputType) {
     let options = '<div class="options-row">';
     columns.forEach((col, index) => {
         const isPredictionColumn = col.column === selectedPredictionColumn;
-        const isCategoricalTreatment = selectedOneHotColumns.has(selectedPredictionColumn);
+        const isCategoricalTreatment = selectedOneHotColumns.has(col.column);
+        const isNumericTreatment = selectedStandardScaleColumns.has(col.column);
         
-        // Determine if the column is checked
-        const checked = type === 'predictionColumn' 
-            ? isPredictionColumn
-            : type === 'onehot' 
-                ? selectedOneHotColumns.has(col.column)
-                : selectedStandardScaleColumns.has(col.column);
+        // Determine actual treatment
+        let actualTreatment;
+        if (isCategoricalTreatment) {
+            actualTreatment = 'categorical';
+        } else if (isNumericTreatment) {
+            actualTreatment = 'numeric';
+        } else {
+            // Default treatment based on column type
+            actualTreatment = (col.type === 'object' || col.type === 'category') ? 'categorical' : 'numeric';
+        }
+
+        // Define checked based on the section
+        let checked = false;
+        if (isIncludeSection) {
+            checked = selectedColumns.has(col.column);
+        } else {
+            if (type === 'predictionColumn') {
+                checked = isPredictionColumn;
+            } else if (type === 'onehot') {
+                checked = isCategoricalTreatment;
+            } else if (type === 'standardscale') {
+                checked = isNumericTreatment;
+            }
+        }
         
         // Determine if the column should be disabled
-        const disabled = type === 'onehot'
-            ? selectedStandardScaleColumns.has(col.column) || (isPredictionColumn && isCategoricalTreatment) // Disable prediction column if treated as categorical
-            : type === 'standardscale'
-                ? selectedOneHotColumns.has(col.column) || (isPredictionColumn && isCategoricalTreatment) // Disable in standard scaling if categorical
-                : false;
+        let disabled = false;
+        if (!isIncludeSection) {
+            if (type === 'onehot') {
+                disabled = isNumericTreatment || 
+                          (isPredictionColumn && actualTreatment === 'categorical');
+            } else if (type === 'standardscale') {
+                disabled = isCategoricalTreatment || 
+                          (isPredictionColumn && actualTreatment === 'numeric');
+            }
+        }
 
-        const isLowCardinalityNumeric = (col.type === 'float64' || col.type === 'int64') && col.unique_values <= 5;
-        const typeIndicator = isLowCardinalityNumeric ? ' (numeric, low cardinality)' : 
-                            (col.type === 'object' || col.type === 'category') ? ' (categorical)' : ' (numeric)';
+        const typeIndicator = actualTreatment === 'categorical' ? 
+                            (col.unique_values <= 5 ? 'categorical (low card)' : 'categorical') : 
+                            'numeric';
 
         options += `
             <div class="column-option">
                 <label>
                     <input type="${inputType}" 
-                           name="${type === 'predictionColumn' ? 'predictionColumn' : type + 'Columns'}" 
+                           name="${isIncludeSection ? 'includeColumn' : type === 'predictionColumn' ? 'predictionColumn' : type + 'Columns'}" 
                            value="${col.column}" 
                            ${checked ? 'checked' : ''} 
                            ${disabled ? 'disabled' : ''}
-                           class="${type === 'predictionColumn' ? '' : type + '-checkbox'}">
-                    ${col.column}${typeIndicator}
+                           class="${isIncludeSection ? 'include-checkbox' : type === 'predictionColumn' ? '' : type + '-checkbox'}">
+                    ${col.column}
+                    <span class="type-indicator">${typeIndicator}</span>
                 </label>
             </div>
         `;
         
-        if ((index + 1) % 4 === 0 && index + 1 < columns.length) {
+        // Start new row every 3 items
+        if ((index + 1) % 3 === 0 && index + 1 < columns.length) {
             options += '</div><div class="options-row">';
         }
     });
@@ -534,7 +587,7 @@ function renderColumnOptions(columns, type, inputType) {
  * Build model selection section
  */
 function buildModelSelectionSection(isCategorical, statsData) {
-    // Check if prediction target is a low-cardinality numeric column
+    // Check the actual treatment of the prediction column
     const predictionColumnInfo = selectedPredictionColumn ? 
         statsData.dtype_info.find(col => col.column === selectedPredictionColumn) : null;
     
@@ -542,9 +595,10 @@ function buildModelSelectionSection(isCategorical, statsData) {
                            (predictionColumnInfo.type === 'float64' || predictionColumnInfo.type === 'int64') &&
                            predictionColumnInfo.unique_values <= 5;
 
-    // Determine final type - either categorical or numeric
-    const finalIsCategorical = isCategorical || 
-                             (isLowCardNumeric && selectedOneHotColumns.has(selectedPredictionColumn));
+    // Determine final treatment based on user selection
+    const finalIsCategorical = selectedOneHotColumns.has(selectedPredictionColumn) || 
+                             (predictionColumnInfo && 
+                              (predictionColumnInfo.type === 'object' || predictionColumnInfo.type === 'category'));
 
     const models = finalIsCategorical ? categoricalModels : numericalModels;
     const modelType = finalIsCategorical ? 'classification' : 'regression';
@@ -552,7 +606,9 @@ function buildModelSelectionSection(isCategorical, statsData) {
     return `
         <div class="model-selection-section">
             <div class="model-type-info">
-                ${isLowCardNumeric ? `Treating "${selectedPredictionColumn}" as ${finalIsCategorical ? 'categorical' : 'numeric'}` : ''}
+                ${isLowCardNumeric ? 
+                    `Treating "${selectedPredictionColumn}" as ${finalIsCategorical ? 'categorical (classification)' : 'numeric (regression)'}` : 
+                    ''}
             </div>
             ${renderModelOptions(models, modelType)}
             ${renderCrossValidationOptions()}
@@ -811,6 +867,7 @@ function generateStructureHTML(statsData) {
  * Set up all analysis control event listeners
  */
 function setupAnalysisControls(statsData) {
+    setupIncludeColumnControls(statsData);
     setupPredictionColumnControls(statsData);
     setupOneHotEncodingControls(statsData);
     setupStandardScalingControls(statsData);
@@ -820,7 +877,6 @@ function setupAnalysisControls(statsData) {
     setupRunAnalysisButton(statsData);
     setupCrossValidationControls();
     
-    // Set up clear results button only if it exists and is not disabled
     const clearResultsBtn = document.getElementById('clearResults');
     if (clearResultsBtn && !clearResultsBtn.disabled) {
         clearResultsBtn.addEventListener('click', clearAnalysisResults);
@@ -831,71 +887,82 @@ function setupAnalysisControls(statsData) {
  * Set up prediction column controls
  */
 function setupPredictionColumnControls(statsData) {
-    // Handle prediction column selection
     document.querySelectorAll('input[name="predictionColumn"]').forEach(radio => {
         radio.addEventListener('change', function() {
             if (this.checked) {
                 selectedPredictionColumn = this.value;
                 const colInfo = statsData.dtype_info.find(col => col.column === this.value);
+                // Determine if this is a low-cardinality numeric column
                 const isLowCardNumeric = colInfo && 
                                       (colInfo.type === 'float64' || colInfo.type === 'int64') &&
                                       colInfo.unique_values <= 5;
-                
-                // Set default treatment
+
+                // Set default treatment based on column type and cardinality
                 if (isLowCardNumeric) {
-                    selectedOneHotColumns.delete(this.value); // Default to numeric
+                    // For low-cardinality numeric, default to numeric treatment (regression)
+                    // But allow user to override via the radio buttons
+                    selectedOneHotColumns.delete(this.value);
                     selectedStandardScaleColumns.add(this.value);
                 } else if (colInfo.type === 'object' || colInfo.type === 'category') {
-                    selectedOneHotColumns.add(this.value); // Default to categorical
+                    // For true categorical columns, default to categorical treatment
+                    selectedOneHotColumns.add(this.value);
                     selectedStandardScaleColumns.delete(this.value);
                 } else {
-                    selectedStandardScaleColumns.add(this.value); // Default to numeric
+                    // For regular numeric columns
+                    selectedStandardScaleColumns.add(this.value);
                     selectedOneHotColumns.delete(this.value);
                 }
-                
+
                 // Reset model and parameters
                 selectedModel = '';
                 modelParams = {};
                 
                 // Initialize default parameters for the first appropriate model
-                const isCategorical = selectedOneHotColumns.has(this.value);
-                const models = isCategorical ? categoricalModels : numericalModels;
+                const finalIsCategorical = selectedOneHotColumns.has(this.value);
+                const models = finalIsCategorical ? categoricalModels : numericalModels;
                 if (models.length > 0) {
-                    selectedModel = models[0].name; // Select the first model
-                    modelParams[selectedModel] = { ...modelDefaultParams[selectedModel] }; // Initialize with defaults
+                    selectedModel = models[0].name;
+                    modelParams[selectedModel] = { ...modelDefaultParams[selectedModel] };
                 }
                 
-                // Re-render to update UI, preserving analysis results
+                // Re-render to update UI
                 renderDataDisplay(statsData);
             }
         });
     });
 
-    // Handle treatment type change using event delegation
+    // Handle treatment type change for low-cardinality numeric columns
     document.addEventListener('change', function(e) {
         if (e.target && e.target.name === 'numericAsType' && selectedPredictionColumn) {
-            if (e.target.value === 'categorical') {
-                selectedOneHotColumns.add(selectedPredictionColumn);
-                selectedStandardScaleColumns.delete(selectedPredictionColumn);
-            } else {
-                selectedOneHotColumns.delete(selectedPredictionColumn);
-                selectedStandardScaleColumns.add(selectedPredictionColumn);
+            const colInfo = statsData.dtype_info.find(col => col.column === selectedPredictionColumn);
+            const isLowCardNumeric = colInfo && 
+                                   (colInfo.type === 'float64' || colInfo.type === 'int64') &&
+                                   colInfo.unique_values <= 5;
+
+            if (isLowCardNumeric) {
+                if (e.target.value === 'categorical') {
+                    selectedOneHotColumns.add(selectedPredictionColumn);
+                    selectedStandardScaleColumns.delete(selectedPredictionColumn);
+                } else {
+                    selectedOneHotColumns.delete(selectedPredictionColumn);
+                    selectedStandardScaleColumns.add(selectedPredictionColumn);
+                }
+
+                // Reset model and parameters
+                selectedModel = '';
+                modelParams = {};
+                
+                // Initialize default parameters for the new model type
+                const finalIsCategorical = e.target.value === 'categorical';
+                const models = finalIsCategorical ? categoricalModels : numericalModels;
+                if (models.length > 0) {
+                    selectedModel = models[0].name;
+                    modelParams[selectedModel] = { ...modelDefaultParams[selectedModel] };
+                }
+                
+                // Re-render to update UI
+                renderDataDisplay(statsData);
             }
-            
-            // Reset model and parameters
-            selectedModel = '';
-            modelParams = {};
-            
-            // Initialize default parameters for the first appropriate model
-            const isCategorical = e.target.value === 'categorical';
-            const models = isCategorical ? categoricalModels : numericalModels;
-            if (models.length > 0) {
-                selectedModel = models[0].name; // Select the first model
-                modelParams[selectedModel] = { ...modelDefaultParams[selectedModel] }; // Initialize with defaults
-            }
-            
-            // Re-render to update UI, preserving analysis results
-            renderDataDisplay(statsData);
         }
     });
 }
@@ -976,19 +1043,25 @@ function initializeColumnSelections() {
 function setupTrainTestSplitControls() {
     const trainInput = document.getElementById('trainSize');
     const testInput = document.getElementById('testSize');
-    
-    trainInput.addEventListener('input', function() {
-        const trainValue = parseInt(this.value);
+    const randomSeedInput = document.getElementById('randomSeed');
+
+    // Initialize from state
+    if (trainInput) trainInput.value = splitSettings.trainSize;
+    if (testInput) testInput.value = splitSettings.testSize;
+    if (randomSeedInput) randomSeedInput.value = splitSettings.randomSeed;
+
+    trainInput?.addEventListener('input', function() {
+        let trainValue = parseInt(this.value);
         if (isNaN(trainValue)) {
-            this.value = 80;
-        } else if (trainValue < 1) {
-            this.value = 1;
-        } else if (trainValue > 99) {
-            this.value = 99;
+            trainValue = 80;
         }
-        testInput.value = 100 - parseInt(this.value);
+        trainValue = Math.max(1, Math.min(99, trainValue));
+        this.value = trainValue;
+        splitSettings.trainSize = trainValue;
+        splitSettings.testSize = 100 - trainValue;
+        testInput.value = splitSettings.testSize;
     });
-    
+
     document.querySelectorAll('.split-adjust').forEach(button => {
         button.addEventListener('click', function() {
             const target = document.getElementById(this.dataset.target);
@@ -1002,10 +1075,18 @@ function setupTrainTestSplitControls() {
             
             target.value = value;
             if (this.dataset.target === 'trainSize') {
-                testInput.value = 100 - value;
+                splitSettings.trainSize = value;
+                splitSettings.testSize = 100 - value;
+                testInput.value = splitSettings.testSize;
+            } else if (this.dataset.target === 'randomSeed') {
+                splitSettings.randomSeed = value;
             }
             target.dispatchEvent(new Event('input'));
         });
+    });
+
+    randomSeedInput?.addEventListener('input', function() {
+        splitSettings.randomSeed = parseInt(this.value) || 42;
     });
 }
 
@@ -1046,7 +1127,7 @@ function setupModelSelectionControls() {
  */
 function setupParameterInputControls() {
     // Use event delegation for dynamically created inputs
-    document.addEventListener('change', function(e) {
+    document.addEventListener('input', function(e) {  // Changed from 'change' to 'input'
         if (e.target && e.target.classList.contains('param-input')) {
             const model = e.target.dataset.model;
             const param = e.target.dataset.param;
@@ -1058,10 +1139,6 @@ function setupParameterInputControls() {
             
             // Store the parameter value
             modelParams[model][param] = value;
-            
-            // For debugging, log the current state
-            console.log(`Updated parameter: ${model}.${param} = ${value}`);
-            console.log('Current modelParams:', modelParams);
         }
     });
 }
@@ -1085,7 +1162,6 @@ function setupRunAnalysisButton(statsData) {
             if (!validateAnalysisInputs(statsData)) {
                 throw new Error('Invalid analysis inputs');
             }
-
             const analysisConfig = prepareAnalysisConfig(statsData);
             const analysisResults = await runAnalysis(analysisConfig);
             displayAnalysisResults(analysisResults);
@@ -1097,6 +1173,20 @@ function setupRunAnalysisButton(statsData) {
             runAnalysisBtn.textContent = 'Run Analysis';
         }
     });
+}
+
+/**
+ * Render column selection section
+ */
+function renderColumnSelectionSection(columns) {
+    return `
+        <div class="analysis-subsection">
+            <h4>Select Columns to Include in Analysis</h4>
+            <div class="column-selection">
+                ${renderColumnOptions(columns, 'includeColumn', 'checkbox', true)}
+            </div>
+        </div>
+    `;
 }
 
 // ==============================================
@@ -1128,11 +1218,17 @@ function validateAnalysisInputs(statsData) {
 
 /**
  * Prepare analysis configuration object
+ * coment
  */
+
 function prepareAnalysisConfig(statsData) {
-    const encoderColumns = statsData.dtype_info.filter(col => col.type === 'object' || col.type === 'category' || col.unique_values <= 5);
-    const isCategorical = encoderColumns.some(col => col.column === selectedPredictionColumn) || 
-                         selectedOneHotColumns.has(selectedPredictionColumn);
+    // Determine if this is a classification or regression problem
+    const isCategorical = selectedOneHotColumns.has(selectedPredictionColumn) || 
+                         statsData.dtype_info.some(col => 
+                             col.column === selectedPredictionColumn && 
+                             (col.type === 'object' || col.type === 'category')
+                         );
+
     const models = isCategorical ? categoricalModels : numericalModels;
     const selectedModelConfig = models.find(m => m.name === selectedModel);
     
@@ -1140,8 +1236,13 @@ function prepareAnalysisConfig(statsData) {
     let params = {};
     if (selectedModelConfig) {
         selectedModelConfig.params.forEach(param => {
-            // Use user-modified value if available, otherwise use default
-            params[param.name] = modelParams[selectedModel]?.[param.name] || param.value;
+            // Check if we have a user-modified value in modelParams
+            if (modelParams[selectedModel] && modelParams[selectedModel][param.name] !== undefined) {
+                params[param.name] = modelParams[selectedModel][param.name];
+            } else {
+                // Fall back to default value
+                params[param.name] = param.value;
+            }
         });
     }
     
@@ -1168,15 +1269,26 @@ function prepareAnalysisConfig(statsData) {
 
     return {
         df: currentDF,
+        columns_to_use: Array.from(selectedColumns),
         prediction_column: selectedPredictionColumn,
         onehot_columns: Array.from(selectedOneHotColumns),
         standardscale_columns: Array.from(selectedStandardScaleColumns),
-        train_size: parseInt(document.getElementById('trainSize').value) / 100,
-        test_size: parseInt(document.getElementById('testSize').value) / 100,
-        random_seed: parseInt(document.getElementById('randomSeed').value),
+        train_size: splitSettings.trainSize / 100,
+        test_size: splitSettings.testSize / 100,
+        random_seed: splitSettings.randomSeed,
         model: selectedModel,
-        model_params: params,  // This now includes user-modified parameters
-        cross_validation: cvParams
+        model_params: params,
+        cross_validation: cvParams,
+        // Add explicit type information
+        column_types: statsData.dtype_info.map(col => ({
+            name: col.column,
+            dtype: col.type,
+            unique_values: col.unique_values,
+            // Add how the column should be treated based on user selections
+            treatment: selectedOneHotColumns.has(col.column) ? 'categorical' : 
+                     selectedStandardScaleColumns.has(col.column) ? 'numeric' :
+                     col.type === 'object' || col.type === 'category' ? 'categorical' : 'numeric'
+        }))
     };
 }
 
@@ -1184,18 +1296,50 @@ function prepareAnalysisConfig(statsData) {
  * Run analysis by sending request to server
  */
 async function runAnalysis(config) {
-    const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(config)
-    });
-    const data = await response.json();
-    
-    if (data.error) {
-        throw new Error(data.error);
+    const runAnalysisBtn = document.getElementById('runAnalysis');
+    try {
+        // Store current selections before running analysis
+        const currentState = {
+            selectedColumns: new Set(selectedColumns),
+            selectedPredictionColumn,
+            selectedOneHotColumns: new Set(selectedOneHotColumns),
+            selectedStandardScaleColumns: new Set(selectedStandardScaleColumns),
+            selectedModel,
+            modelParams: JSON.parse(JSON.stringify(modelParams)),
+            cvState: {...cvState}
+        };
+
+        runAnalysisBtn.disabled = true;
+        runAnalysisBtn.textContent = 'Processing...';
+        
+        const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(config)
+        });
+        const data = await response.json();
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        // Restore selections after analysis completes
+        selectedColumns = new Set(currentState.selectedColumns);
+        selectedPredictionColumn = currentState.selectedPredictionColumn;
+        selectedOneHotColumns = new Set(currentState.selectedOneHotColumns);
+        selectedStandardScaleColumns = new Set(currentState.selectedStandardScaleColumns);
+        selectedModel = currentState.selectedModel;
+        modelParams = JSON.parse(JSON.stringify(currentState.modelParams));
+        cvState = {...currentState.cvState};
+
+        return data;
+    } catch (error) {
+        throw error;
+    } finally {
+        if (runAnalysisBtn) {
+            runAnalysisBtn.disabled = false;
+            runAnalysisBtn.textContent = 'Run Analysis';
+        }
     }
-    
-    return data;
 }
 
 // ==============================================
@@ -1207,6 +1351,9 @@ async function runAnalysis(config) {
  */
 async function displayAnalysisResults(data) {
     try {
+        // Store current statsData reference
+        const currentStatsData = await getDataStatistics({ df: currentDF });
+        
         // Get or create display area
         let displayArea = document.getElementById('analysis-results-area');
         if (!displayArea) {
@@ -1215,10 +1362,9 @@ async function displayAnalysisResults(data) {
             document.querySelector('.analysis-section').appendChild(displayArea);
         }
         
-        // Create results container for this specific result
+        // Create results container
         const resultsContainer = document.createElement('div');
         resultsContainer.className = 'analysis-results';
-        resultsContainer.innerHTML = '';
         
         // Add visualization if available
         if (data.image_data) {
@@ -1230,16 +1376,16 @@ async function displayAnalysisResults(data) {
             resultsContainer.appendChild(createMetricsDisplay(data.metrics));
         }
         
-        // Add this result to the display area
+        // Add results to display area
         if (displayArea.firstChild) {
             displayArea.insertBefore(resultsContainer, displayArea.firstChild);
         } else {
             displayArea.appendChild(resultsContainer);
         }
         
-        // Fetch updated stats to ensure valid statsData
-        const statsData = await getDataStatistics({ df: currentDF });
-        renderDataDisplay(statsData);
+        // Re-render while preserving state
+        renderDataDisplay(currentStatsData);
+        
     } catch (error) {
         handleError('Error updating UI after displaying results:', error);
     }
@@ -1372,26 +1518,30 @@ function setupCrossValidationControls() {
  * Reset all internal state variables when a new CSV file is uploaded
  */
 function resetState() {
+    // Only reset if we don't have any existing selections
+    // if (selectedColumns.size === 0) {
+    //     // Initialize with all columns if we have statsData
+    //     if (currentDF && currentDF.columns) {
+    //         currentDF.columns.forEach(col => {
+    //             selectedColumns.add(col);
+    //         });
+    //     }
+    // }
+    
+    // Don't reset these unless we're doing a fresh upload
+
     selectedPredictionColumn = null;
     selectedOneHotColumns = new Set();
     selectedStandardScaleColumns = new Set();
     selectedModel = '';
     modelParams = {};
-    modelDefaultParams = {};
-    cvState = {
-    method: 'none',
-    kfoldSplits: 5,
-    shuffleSplits: 5,
-    shuffleTestSize: 20
-};
-    
-    // Reinitialize modelDefaultParams with default values
-    [...categoricalModels, ...numericalModels].forEach(model => {
-        modelDefaultParams[model.name] = {};
-        model.params.forEach(param => {
-            modelDefaultParams[model.name][param.name] = param.value;
-        });
-    });
+    columnsToInclude = new Set();
+    selectedColumns = new Set();
+    splitSettings = {
+        trainSize: 80,
+        testSize: 20,
+        randomSeed: 42
+    };
 }
 
 // ==============================================
