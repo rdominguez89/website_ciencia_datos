@@ -653,17 +653,16 @@ function renderModelParameterInputs(model) {
     let inputs = '';
     
     model.params.forEach(param => {
-        const paramValue = modelParams[model.name]?.[param.name] !== undefined 
-            ? modelParams[model.name][param.name] 
-            : param.value;
-            
+        // Get the current value from modelParams or fall back to default
+        const currentValue = modelParams[model.name]?.[param.name] || param.value;
+        
         inputs += `
             <div class="param-control">
                 <label>${param.name}:</label>
-                <input type="text" class="cv-options" 
+                <input type="text" class="param-input" 
                        data-model="${model.name}" 
                        data-param="${param.name}" 
-                       value="${paramValue}"
+                       value="${currentValue}"
                        placeholder="${param.value}">
             </div>
         `;
@@ -1021,7 +1020,14 @@ function setupModelSelectionControls() {
                 
                 // Initialize model parameters with defaults if not already set
                 if (!modelParams[selectedModel]) {
-                    modelParams[selectedModel] = { ...modelDefaultParams[selectedModel] };
+                    modelParams[selectedModel] = {};
+                    const models = [...categoricalModels, ...numericalModels];
+                    const modelConfig = models.find(m => m.name === selectedModel);
+                    if (modelConfig) {
+                        modelConfig.params.forEach(param => {
+                            modelParams[selectedModel][param.name] = param.value;
+                        });
+                    }
                 }
                 
                 // Show parameters for the selected model
@@ -1039,17 +1045,24 @@ function setupModelSelectionControls() {
  * Set up model parameter input controls
  */
 function setupParameterInputControls() {
-    document.querySelectorAll('.param-input').forEach(input => {
-        input.addEventListener('change', function() {
-            const model = this.dataset.model;
-            const param = this.dataset.param;
-            const value = this.value;
+    // Use event delegation for dynamically created inputs
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.classList.contains('param-input')) {
+            const model = e.target.dataset.model;
+            const param = e.target.dataset.param;
+            const value = e.target.value;
             
             if (!modelParams[model]) {
                 modelParams[model] = {};
             }
+            
+            // Store the parameter value
             modelParams[model][param] = value;
-        });
+            
+            // For debugging, log the current state
+            console.log(`Updated parameter: ${model}.${param} = ${value}`);
+            console.log('Current modelParams:', modelParams);
+        }
     });
 }
 
@@ -1123,10 +1136,13 @@ function prepareAnalysisConfig(statsData) {
     const models = isCategorical ? categoricalModels : numericalModels;
     const selectedModelConfig = models.find(m => m.name === selectedModel);
     
-    // Initialize params with default values if not already set
-    let params = modelParams[selectedModel] || {};
-    if (selectedModelConfig && Object.keys(params).length === 0) {
-        params = { ...modelDefaultParams[selectedModel] };
+    // Get parameters - use user-modified values if available, otherwise use defaults
+    let params = {};
+    if (selectedModelConfig) {
+        selectedModelConfig.params.forEach(param => {
+            // Use user-modified value if available, otherwise use default
+            params[param.name] = modelParams[selectedModel]?.[param.name] || param.value;
+        });
     }
     
     // Get CV parameters
@@ -1159,7 +1175,7 @@ function prepareAnalysisConfig(statsData) {
         test_size: parseInt(document.getElementById('testSize').value) / 100,
         random_seed: parseInt(document.getElementById('randomSeed').value),
         model: selectedModel,
-        model_params: params,
+        model_params: params,  // This now includes user-modified parameters
         cross_validation: cvParams
     };
 }
