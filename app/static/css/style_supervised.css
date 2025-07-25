@@ -459,7 +459,7 @@ input:focus, select:focus, textarea:focus {
     padding: 15px;
     margin-bottom: 20px;
     border: 1px solid #4a5568;
-    
+
 }
 
 .analysis-subsection h4 {
@@ -704,12 +704,12 @@ input:focus, select:focus, textarea:focus {
         -webkit-overflow-scrolling: touch;
         white-space: nowrap;
     }
-    
+
     th, td {
         padding: 6px 8px; /* Slightly reduced padding */
         font-size: 0.85em; /* Slightly smaller font */
     }
-    
+
     /* Optional: Add horizontal scroll indicator */
     table::after {
         content: "→";
@@ -733,23 +733,30 @@ input:focus, select:focus, textarea:focus {
         padding: 10px;
         box-sizing: border-box;
     }
-    
+
     .visualization-grid {
         grid-template-columns: 1fr;
     }
 
     .model-description {
-        max-width: 100%; /* Adjust as needed */
+        max-width: 90%; /* Adjust as needed */
         padding-right: 10px; /* Prevent text from touching the edge */
         box-sizing: border-box; /* Include padding in element's total width */
     }
-    
+
     .model-option-box {
-        box-sizing: border-box; /* Include padding and border in the element's total width */
+        max-width: 65%; /* Include padding and border in the element's total width */
         padding: 10px; /* Add some padding */
         margin: 5px; /* Add some margin */
     }
-    
+
+    .cv-param {
+        width: 100%;
+        padding: 0.2em;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
 }
 
 
