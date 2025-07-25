@@ -40,6 +40,11 @@ const numericalModels = [
     { name: 'lasso', params: [{ name: 'alpha', value: '1.0' }], description: 'Best when feature selection is needed (sparse data) and some coefficients should be zero.' },
     { name: 'elasticnet', params: [{ name: 'alpha', value: '1.0' }, { name: 'l1_ratio', value: '0.5' }], description: 'Combines Ridge & Lasso benefits; best when both multicollinearity and feature selection are needed.'},
     { name: 'svr', params: [{ name: 'C', value: '1.0' }, { name: 'kernel', value: 'rbf' }, { name: 'gamma', value: 'scale' }], description: 'Effective for complex, nonlinear relationships, especially with kernel tricks for high-dimensional data. Good for small-to-medium datasets.' },
+    { name: 'randomforest', params: [{ name: 'n_estimators', value: '100' }, { name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Robust general-purpose classifier, handles nonlinearity well. Good for large datasets.'},
+    { name: 'gradientboosting', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }], description: 'High accuracy for tabular data, great with imbalanced datasets.'},
+    { name: 'xgboost', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }, { name: 'eval_metric', value: 'logloss' }], description: 'Best for structured data, optimized performance.'},
+    { name: 'knn', params: [{ name: 'n_neighbors', value: '5' }], description: 'Works well for small, low-dimensional data with local patterns. Prone to noise and high dimensions.'},
+    { name: 'decisiontree', params: [{ name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Simple and interpretable, but prone to overfitting; good for small datasets.'},
 ];
 
 // ==============================================
