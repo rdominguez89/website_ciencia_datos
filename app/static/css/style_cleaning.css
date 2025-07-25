@@ -201,6 +201,7 @@ table {
     width: 100%;
     margin: 20px 0;
     background-color: #1a202c;  /* Dark background */
+    white-space: nowrap;
 }
 
 table, th, td {

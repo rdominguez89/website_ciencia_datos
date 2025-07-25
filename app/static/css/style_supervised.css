@@ -108,7 +108,6 @@ h1 {
 #dataPreview {
     margin-top: 30px;
     width: 100%;
-    overflow: hidden;
 }
 
 /* Tabs */
@@ -724,19 +723,39 @@ input:focus, select:focus, textarea:focus {
     .data-tabs {
         flex-wrap: wrap;
     }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    /* Data Analysis Setup adjustments: ensure borders and elements fit the width */
+    .analysis-section,
+    .analysis-subsection {
+        padding: 10px;
+        box-sizing: border-box;
+    }
     
     .visualization-grid {
         grid-template-columns: 1fr;
     }
 
+    .model-description {
+        max-width: 100%; /* Adjust as needed */
+        padding-right: 10px; /* Prevent text from touching the edge */
+        box-sizing: border-box; /* Include padding in element's total width */
+    }
+    
     .model-option-box {
         box-sizing: border-box; /* Include padding and border in the element's total width */
         padding: 10px; /* Add some padding */
         margin: 5px; /* Add some margin */
     }
-    .model-description {
-        max-width: 100%; /* Adjust as needed */
-        padding-right: 10px; /* Prevent text from touching the edge */
-        box-sizing: border-box; /* Include padding in element's total width */
+    
+}
+
+
+@media (min-width: 769px) {
+    .table-responsive-desktop {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 }
