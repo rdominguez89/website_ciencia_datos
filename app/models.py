@@ -3,7 +3,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet, LogisticRegression
 from sklearn.svm import SVR, SVC
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, AdaBoostRegressor
 from xgboost import XGBRegressor, XGBClassifier
 from sklearn.neighbors import KNeighborsRegressor, KNeighborsClassifier
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
@@ -108,6 +108,15 @@ def get_numeric_model(name, inputs):
                 random_state=inputs[2]
             ))
         ])
+    elif name == 'adaboost':
+        model = Pipeline([
+            ('preprocessor', preprocessor),
+            ('regressor', AdaBoostRegressor(
+                n_estimators=int(inputs[3]['n_estimators']),
+                learning_rate=float(inputs[3]['learning_rate']),
+                random_state=inputs[2]
+            ))
+        ])
     
     else:
         raise ValueError(f"model '{name}' no recognized")
@@ -198,6 +207,16 @@ def get_categorical_model(name, inputs):
                 random_state=inputs[2]
             ))
         ])
+    elif name == 'adaboost':
+        model = Pipeline([
+            ('preprocessor', preprocessor),
+            ('classifier', AdaBoostClassifier(
+                n_estimators=int(inputs[3]['n_estimators']),
+                learning_rate=float(inputs[3]['learning_rate']),
+                random_state=inputs[2]
+            ))
+        ])
+        
     else:
         raise ValueError(f"model '{name}' no reconocido")
     

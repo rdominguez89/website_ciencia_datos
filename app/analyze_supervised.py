@@ -188,8 +188,10 @@ def regression_analysis(df, data, X, encoder_columns, standar_scale_columns):
         fig = add_watermark_fig(fig, xs=[0.3])
         if preprocesor and len(encoder_columns) > 0:
             X = preprocesor.fit_transform(X)
-        inputs_cat = [col for col in X.columns if not any(num_col in col for num_col in standar_scale_columns)]
-        input_list = [inputs_cat, standar_scale_columns, random_state, params]
+            inputs_cat = [col for col in X.columns if not any(num_col in col for num_col in standar_scale_columns)]
+            input_list = [inputs_cat, standar_scale_columns, random_state, params]
+        else:
+            input_list = [encoder_columns, standar_scale_columns, random_state, params]
         model, preprocesor = get_numeric_model(name, input_list)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
         disc, y_pred = get_resultados_model_numeric(X_train, X_test, y_train, y_test, model)

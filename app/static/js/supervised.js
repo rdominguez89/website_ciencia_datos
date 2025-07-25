@@ -31,6 +31,7 @@ const categoricalModels = [
     { name: 'xgboost', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }, { name: 'eval_metric', value: 'logloss' }], description: 'Best for structured data, optimized performance.'},
     { name: 'knn', params: [{ name: 'n_neighbors', value: '5' }], description: 'Works well for small, low-dimensional data with local patterns. Prone to noise and high dimensions.'},
     { name: 'decisiontree', params: [{ name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Simple and interpretable, but prone to overfitting; good for small datasets.'},
+    { name: 'adaboost', params: [{name: 'n_estimators', value: '50'}, {name: 'learning_rate', value: '1.0'}], description: 'Good for boosting weak learners.'},
 ];
 
 const numericalModels = [
@@ -45,6 +46,8 @@ const numericalModels = [
     { name: 'xgboost', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }, { name: 'eval_metric', value: 'logloss' }], description: 'Best for structured data, optimized performance.'},
     { name: 'knn', params: [{ name: 'n_neighbors', value: '5' }], description: 'Works well for small, low-dimensional data with local patterns. Prone to noise and high dimensions.'},
     { name: 'decisiontree', params: [{ name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Simple and interpretable, but prone to overfitting; good for small datasets.'},
+    { name: 'adaboost', params: [{name: 'n_estimators', value: '50'}, {name: 'learning_rate', value: '1.0'}], description: 'Good for boosting weak learners.'},
+
 ];
 
 // ==============================================
