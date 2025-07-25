@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, send_file, current_app
+from flask import Blueprint, render_template, request, jsonify, send_file, current_app, abort
 import pandas as pd
 import os
 import re
@@ -29,6 +29,20 @@ CORS(bp, resources={
         "supports_credentials": True
     }
 })
+
+# New before-request hook for API origin validation
+@bp.before_request
+def restrict_api_origin():
+    """
+    Reject requests to API endpoints that do not have an allowed Origin header.
+    This ensures that API endpoints are only accessible from our webpages.
+    """
+    if request.path.startswith('/api/'):
+        allowed_origins = {"http://127.0.0.1:5000", "https://rastro.pythonanywhere.com"}
+        origin = request.headers.get("Origin")
+        if origin not in allowed_origins:
+            current_app.logger.error(f"Blocked API access from Origin: {origin}")
+            abort(403)
 
 # Error handling
 @bp.errorhandler(Exception)
