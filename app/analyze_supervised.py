@@ -531,9 +531,9 @@ def get_aux_text(params, encoder_columns, standar_scale_columns, prediction_colu
         sections.append("Encoded Columns: " + _format_with_paired_linebreaks(encoder_columns))
     
     # Format scaled columns
-    if standar_scale_columns:
-        sections.append("Scaled Columns: " + _format_with_paired_linebreaks(standar_scale_columns))
-    
+    #if standar_scale_columns:
+    sections.append("Scaled Columns: " + _format_with_paired_linebreaks(standar_scale_columns+[prediction_column]))  
+      
     # Format original columns
     remaining_cols = [col for col in columns 
                      if col not in encoder_columns 
