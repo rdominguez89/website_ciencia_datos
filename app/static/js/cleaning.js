@@ -641,7 +641,9 @@ function loadInitialContent(statsData) {
     tabContent.innerHTML = `
         <div id="preview-content">
             <h3>First 5 Rows</h3>
-            ${statsData.data_head}
+            <div class="table-responsive-desktop">
+                ${statsData.data_head}
+            </div>
         </div>
     `;
 }
@@ -654,7 +656,9 @@ function loadTabContent(tabName, statsData) {
             tabContent.innerHTML = `
                 <div id="preview-content">
                     <h3>First 5 Rows</h3>
-                    ${statsData.data_head}
+                    <div class="table-responsive-desktop">
+                        ${statsData.data_head}
+                    </div>
                 </div>
             `;
             break;

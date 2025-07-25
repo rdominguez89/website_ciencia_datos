@@ -728,4 +728,15 @@ input:focus, select:focus, textarea:focus {
     .visualization-grid {
         grid-template-columns: 1fr;
     }
+
+    .model-option-box {
+        box-sizing: border-box; /* Include padding and border in the element's total width */
+        padding: 10px; /* Add some padding */
+        margin: 5px; /* Add some margin */
+    }
+    .model-description {
+        max-width: 100%; /* Adjust as needed */
+        padding-right: 10px; /* Prevent text from touching the edge */
+        box-sizing: border-box; /* Include padding in element's total width */
+    }
 }

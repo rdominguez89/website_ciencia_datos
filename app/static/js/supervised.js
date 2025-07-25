@@ -767,7 +767,9 @@ function loadTabContent(tabName, statsData) {
             tabContent.innerHTML = `
                 <div id="preview-content">
                     <h3>First 5 Rows</h3>
-                    ${statsData.data_head}
+                    <div class="table-responsive-desktop">
+                        ${statsData.data_head}
+                    </div>
                 </div>
             `;
             break;
@@ -781,6 +783,7 @@ function loadTabContent(tabName, statsData) {
         case 'structure':
             tabContent.innerHTML = generateStructureHTML(statsData);
             break;
+        // ... other cases as needed
     }
 }
 

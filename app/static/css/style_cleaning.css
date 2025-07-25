@@ -347,4 +347,15 @@ th {
     .visualization-grid {
         grid-template-columns: 1fr;
     }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 769px) {
+    .table-responsive-desktop {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 }
