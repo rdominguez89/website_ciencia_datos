@@ -32,6 +32,7 @@ const categoricalModels = [
     { name: 'knn', params: [{ name: 'n_neighbors', value: '5' }], description: 'Works well for small, low-dimensional data with local patterns. Prone to noise and high dimensions.'},
     { name: 'decisiontree', params: [{ name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Simple and interpretable, but prone to overfitting; good for small datasets.'},
     { name: 'adaboost', params: [{name: 'n_estimators', value: '50'}, {name: 'learning_rate', value: '1.0'}], description: 'Good for boosting weak learners.'},
+    { name: 'bagging', params: [{name: 'n_estimators', value: '10'}], description: 'Reduces variance, improves stability.'},
 ];
 
 const numericalModels = [
@@ -47,7 +48,7 @@ const numericalModels = [
     { name: 'knn', params: [{ name: 'n_neighbors', value: '5' }], description: 'Works well for small, low-dimensional data with local patterns. Prone to noise and high dimensions.'},
     { name: 'decisiontree', params: [{ name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Simple and interpretable, but prone to overfitting; good for small datasets.'},
     { name: 'adaboost', params: [{name: 'n_estimators', value: '50'}, {name: 'learning_rate', value: '1.0'}], description: 'Good for boosting weak learners.'},
-
+    { name: 'bagging', params: [{name: 'n_estimators', value: '10'}], description: 'Reduces variance, improves stability.'},
 ];
 
 // ==============================================
@@ -484,6 +485,20 @@ function renderStandardScalingSection(columns) {
  * Render train/test split section
  */
 function renderTrainTestSplitSection() {
+    const isPredictionColumnNumeric = selectedPredictionColumn &&
+                                     !selectedOneHotColumns.has(selectedPredictionColumn);
+
+    const balanceMethodOptions = isPredictionColumnNumeric ? `
+        <option value="none">None</option>
+    ` : `
+        <option value="none">None</option>
+        <option value="randomoversampler">RandomOverSampler</option>
+        <option value="randomundersampler">RandomUnderSampler</option>
+        <option value="smoteenn" disabled>SMOTEENN (unavailable)</option>
+    `;
+
+    const balanceMethodDisabled = isPredictionColumnNumeric;
+
     return `
         <div class="analysis-subsection">
             <h4>Train/Test Split Configuration</h4>
@@ -501,6 +516,12 @@ function renderTrainTestSplitSection() {
                 <div class="split-control">
                     <label>Random Seed:</label>
                     <input type="number" id="randomSeed" value="${splitSettings.randomSeed}" class="split-input">
+                </div>
+                <div class="split-control">
+                    <label>Balance Method:</label>
+                    <select id="balanceMethod" class="split-input wider-select" ${balanceMethodDisabled ? 'disabled' : ''}>
+                        ${balanceMethodOptions}
+                    </select>
                 </div>
             </div>
         </div>
@@ -613,11 +634,6 @@ function buildModelSelectionSection(isCategorical, statsData) {
     
     return `
         <div class="model-selection-section">
-            <div class="model-type-info">
-                ${isLowCardNumeric ? 
-                    `Treating "${selectedPredictionColumn}" as ${finalIsCategorical ? 'categorical (classification)' : 'numeric (regression)'}` : 
-                    ''}
-            </div>
             ${renderModelOptions(models, modelType)}
             ${renderCrossValidationOptions()}
             ${renderModelParameters(models)}
@@ -1048,6 +1064,7 @@ function initializeColumnSelections() {
     }
 }
 
+
 /**
  * Set up train/test split controls
  */
@@ -1055,11 +1072,13 @@ function setupTrainTestSplitControls() {
     const trainInput = document.getElementById('trainSize');
     const testInput = document.getElementById('testSize');
     const randomSeedInput = document.getElementById('randomSeed');
+    const balanceMethodSelect = document.getElementById('balanceMethod'); // Get the balance method select element
 
     // Initialize from state
     if (trainInput) trainInput.value = splitSettings.trainSize;
     if (testInput) testInput.value = splitSettings.testSize;
     if (randomSeedInput) randomSeedInput.value = splitSettings.randomSeed;
+    if (balanceMethodSelect) balanceMethodSelect.value = splitSettings.balanceMethod || 'none'; // Initialize balance method
 
     trainInput?.addEventListener('input', function() {
         let trainValue = parseInt(this.value);
@@ -1099,8 +1118,12 @@ function setupTrainTestSplitControls() {
     randomSeedInput?.addEventListener('input', function() {
         splitSettings.randomSeed = parseInt(this.value) || 42;
     });
-}
 
+    // Add event listener for balance method selection
+    balanceMethodSelect?.addEventListener('change', function() {
+        splitSettings.balanceMethod = this.value;
+    });
+}
 /**
  * Set up model selection controls
  */
@@ -1290,6 +1313,7 @@ function prepareAnalysisConfig(statsData) {
         model: selectedModel,
         model_params: params,
         cross_validation: cvParams,
+        balance_method: splitSettings.balanceMethod || 'none',
         // Add explicit type information
         column_types: statsData.dtype_info.map(col => ({
             name: col.column,

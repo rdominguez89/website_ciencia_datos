@@ -3,11 +3,15 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet, LogisticRegression
 from sklearn.svm import SVR, SVC
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, AdaBoostRegressor
+from sklearn.ensemble import BaggingClassifier, BaggingRegressor, RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, AdaBoostRegressor
 from xgboost import XGBRegressor, XGBClassifier
 from sklearn.neighbors import KNeighborsRegressor, KNeighborsClassifier
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
-
+from imblearn.over_sampling import RandomOverSampler
+from imblearn.under_sampling import RandomUnderSampler
+from imblearn.combine import SMOTEENN
+from imblearn.under_sampling import EditedNearestNeighbours
+import pandas as pd
 
 def get_numeric_model(name, inputs):
     """Create and configure a numeric prediction model pipeline."""
@@ -22,6 +26,7 @@ def get_numeric_model(name, inputs):
     else:
         preprocessor = None
     
+    model = None
     if name == 'poly':
         model = Pipeline([
             ('preprocessor', preprocessor),
@@ -117,6 +122,14 @@ def get_numeric_model(name, inputs):
                 random_state=inputs[2]
             ))
         ])
+    elif name == 'bagging':
+        model = Pipeline([
+            ('preprocessor', preprocessor),
+            ('regressor', BaggingRegressor(
+                n_estimators=int(inputs[3]['n_estimators']),
+                random_state=inputs[2]
+            ))
+        ])
     
     else:
         raise ValueError(f"model '{name}' no recognized")
@@ -134,6 +147,7 @@ def get_categorical_model(name, inputs):
     else:
         preprocessor = None
     
+    model = None
     if name == 'logistic':
         model = Pipeline([
             ('preprocessor', preprocessor),
@@ -216,9 +230,91 @@ def get_categorical_model(name, inputs):
                 random_state=inputs[2]
             ))
         ])
-        
+    elif name == 'bagging':
+        model = Pipeline([
+            ('preprocessor', preprocessor),
+            ('classifier', BaggingClassifier(
+                n_estimators=int(inputs[3]['n_estimators']),
+                random_state=inputs[2]
+            ))
+        ])
     else:
         raise ValueError(f"model '{name}' no reconocido")
     
     return model
+
+# def X_train_transform(X_train, columns_info, backwards=False):
+#     if not backwards:
+#         # Forward transformation (encoding)
+#         info_encoder = {}
+#         X_transformed = X_train.copy()
+        
+#         # Get categorical columns
+#         cat_cols = [info['name'] for info in columns_info if info['dtype'] == 'object']
+#         if len(cat_cols) == 0: return X_transformed, info_encoder
+        
+#         # Initialize and fit LabelEncoders for each categorical column
+#         encoders = {col: LabelEncoder().fit(X_train[col]) for col in cat_cols}
+        
+#         # Transform categorical columns and store encoders
+#         for col, encoder in encoders.items():
+#             X_transformed[col] = encoder.transform(X_transformed[col])
+#             info_encoder[col] = {
+#                 'encoder': encoder,
+#                 'original_dtype': 'object',
+#                 'encoded_values': encoder.classes_
+#             }
+        
+#         return X_transformed, info_encoder
+#     else:
+#         # Backward transformation (decoding)
+#         X_original = X_train.copy()
+#         info_encoder = columns_info  # In this case, columns_info contains the encoder info
+        
+#         # Inverse transform each encoded column
+#         for col, enc_info in info_encoder.items():
+#             encoder = enc_info['encoder']
+#             X_original[col] = encoder.inverse_transform(X_train[col].astype(int))
+        
+#         return X_original, None
+
+def create_balancing_pipeline(balancing_method, columns_info, random_state, X_train, y_train):
+    """Create a pipeline with a balancing method and a model."""
+    balance_used = False
+    
+    if balancing_method == 'none': 
+        return X_train, y_train, balance_used
+    
+    balance_used = True
+    
+    if balancing_method == 'randomundersampler':
+        sampler = RandomUnderSampler(random_state=random_state)
+    elif balancing_method == 'randomoversampler':
+        sampler = RandomOverSampler(random_state=random_state)
+    # elif balancing_method == 'smoteenn':
+    #     # Transform categorical columns before SMOTEENN
+    #     X_train_transformed, info_encoder = X_train_transform(X_train, columns_info)
+    #     sampler = SMOTEENN(random_state=random_state)
+    else:
+        return X_train, y_train, balance_used
+    
+    # Apply sampling
+    # if balancing_method == 'smoteenn':
+    #     X_train_temp, y_train_temp = sampler.fit_resample(X_train_transformed, y_train)
+    #     if len(set(y_train_temp)) != len(set(y_train)):
+    #         enn = EditedNearestNeighbours(n_neighbors=10, sampling_strategy='all')
+    #         sampler = SMOTEENN(enn=enn, random_state=42)
+    #         X_train_temp, y_train_temp = sampler.fit_resample(X_train_transformed, y_train)
+    # else:
+    X_train, y_train = sampler.fit_resample(X_train.copy(), y_train.copy())
+    
+    # if len(X_train_temp) != 0:
+    #     X_train, y_train = X_train_temp, y_train_temp
+    #     if balancing_method == 'smoteenn':
+    #         # Transform back to original categorical values
+    #         X_train, _ = X_train_transform(X_train, info_encoder, backwards=True)
+    # else:
+    #     balance_used = False
+    
+    return X_train, y_train, balance_used
 

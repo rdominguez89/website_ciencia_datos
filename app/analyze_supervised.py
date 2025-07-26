@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, confusion_matrix, ConfusionMatrixDisplay, make_scorer, accuracy_score, f1_score, precision_score, recall_score
 import io
 import base64
-from .models import get_numeric_model, get_categorical_model
+from .models import get_numeric_model, get_categorical_model, create_balancing_pipeline
 
 
 def set_common_plot_config():
@@ -42,7 +42,7 @@ def _format_with_paired_linebreaks(items):
     return ''.join(formatted)
 
 
-def get_aux_text(params, encoder_columns, standar_scale_columns, prediction_column, columns):
+def get_aux_text(params, encoder_columns, standar_scale_columns, prediction_column, columns, balancing_method):
     """
     Build auxiliary text information from parameters and column lists.
     
@@ -73,6 +73,7 @@ def get_aux_text(params, encoder_columns, standar_scale_columns, prediction_colu
                       and col != prediction_column]
     if remaining_cols:
         sections.append("Original Columns: " + _format_with_paired_linebreaks(remaining_cols))
+    if balancing_method!= 'none': sections.append(f'Balance method: {balancing_method}')
     return '\n'.join(sections)
 
 
@@ -96,6 +97,8 @@ def classification_analysis(df, data, X, encoder_columns, standar_scale_columns)
     name = data['model']
     params = data['model_params']
     cv_config = data['cross_validation'] if len(data['cross_validation']) > 0 else None
+    balancing_method = data['balance_method']
+    columns_info = data['column_types']
 
     # Remove prediction column from encoder-columns
     if prediction_column in encoder_columns:
@@ -105,7 +108,7 @@ def classification_analysis(df, data, X, encoder_columns, standar_scale_columns)
     opt = len(y_check) > 2
     label_encoder = LabelEncoder()
     y = label_encoder.fit_transform(df[prediction_column])
-    aux_text = get_aux_text(params, encoder_columns, standar_scale_columns, prediction_column, X.columns)
+    aux_text = get_aux_text(params, encoder_columns, standar_scale_columns, prediction_column, X.columns, balancing_method)
     model = get_categorical_model(name, [encoder_columns, standar_scale_columns, random_state, params])
     
     if cv_config is not None:
@@ -127,6 +130,7 @@ def classification_analysis(df, data, X, encoder_columns, standar_scale_columns)
         # Train-test split path
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, random_state=random_state, stratify=y)
+        X_train, y_train, balance_used = create_balancing_pipeline(balancing_method, columns_info, random_state, X_train, y_train)
         disc, y_pred = get_resultados_model_categorical(X_train, X_test, y_train, y_test, model, opt)
         cv_results = {'y_test': y_test, 'y_pred': y_pred}
         
@@ -157,6 +161,7 @@ def regression_analysis(df, data, X, encoder_columns, standar_scale_columns):
     name = data['model']
     params = data['model_params']
     cv_config = data['cross_validation'] if len(data['cross_validation']) > 0 else None
+    balancing_method = data['balance_method']
 
     # Ensure prediction column is not in the feature set
     if prediction_column in encoder_columns:
