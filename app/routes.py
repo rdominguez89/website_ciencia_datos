@@ -11,6 +11,7 @@ from werkzeug.exceptions import HTTPException
 from .utils import allowed_file, load_dataframe, get_stats_summary, clean_dataframe, create_visualizations_function, remove_outliers_function, create_correlation_plots_function, save_dataframe
 from .analyze_supervised import analyze_data
 from flask_cors import CORS
+from traceback import format_exc
 
 bp = Blueprint('main', __name__)
 
@@ -47,13 +48,17 @@ def restrict_api_origin():
 # Error handling
 @bp.errorhandler(Exception)
 def handle_exception(e):
-    # Log the actual error for debugging
-    current_app.logger.error(f"Error: {str(e)}")
-    
-    # Return generic error message to client
+    # Log the full traceback for debugging
+    current_app.logger.error(f"Error: {str(e)}\n{format_exc()}")
+
+    # Extract error information
+    error_message = str(e)
+    error_type = type(e).__name__
+
+    # Return error information to client
     if isinstance(e, HTTPException):
-        return jsonify({'error': e.description}), e.code
-    return jsonify({'error': 'An unexpected error occurred'}), 500
+        return jsonify({'error': e.description, 'error_type': error_type}, e.code)
+    return jsonify({'error': error_message, 'error_type': error_type}), 500
 
 # Security headers (configure in your app factory)
 talisman = Talisman(
@@ -215,4 +220,5 @@ def analyze():
         result = analyze_data(df, data)
         return jsonify(result)
     except Exception as e:
-        return jsonify({'error': 'Analysis failed', 'success': False}), 400
+        current_app.logger.error(f"Analysis failed: {str(e)}\n{format_exc()}")
+        return jsonify({'error': str(e), 'error_type': type(e).__name__, 'success': False}), 400

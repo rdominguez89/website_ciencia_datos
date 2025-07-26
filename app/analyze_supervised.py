@@ -42,7 +42,7 @@ def _format_with_paired_linebreaks(items):
     return ''.join(formatted)
 
 
-def get_aux_text(params, encoder_columns, standar_scale_columns, prediction_column, columns, balancing_method):
+def get_aux_text(params, encoder_columns, standar_scale_columns, prediction_column, columns, balancing_method='none'):
     """
     Build auxiliary text information from parameters and column lists.
     
