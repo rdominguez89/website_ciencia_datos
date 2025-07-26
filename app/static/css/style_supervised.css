@@ -686,6 +686,16 @@ input:focus, select:focus, textarea:focus {
     100% { background-position: -200% 0; }
 }
 
+/* Style for the info icon */
+.model-info {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #63b3ed; /* Light blue color */
+}
+
+.model-info i {
+    font-size: 1em;
+}
 
 /* Responsive */
 @media (max-width: 768px) {

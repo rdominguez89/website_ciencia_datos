@@ -666,6 +666,7 @@ function renderModelOptions(models, modelType) {
                     <span class="model-name">${model.name}</span>
                     ${isDisabled ? '<span class="model-unavailable">(Temporarily unavailable)</span>' : ''}
                     <span class="model-description">${model.description || ''}</span>
+                    <span class="model-info" title="${getModelLongDescription(model.name, modelType)}"><i class="fas fa-info-circle"></i></span>
                 </label>
             </div>
         `;
@@ -677,6 +678,7 @@ function renderModelOptions(models, modelType) {
     `;
     return options;
 }
+
 
 /**
  * Render model parameters
@@ -1682,6 +1684,67 @@ async function clearAnalysisResults() {
     } catch (error) {
         handleError('Error updating UI after clearing results:', error);
     }
+}
+
+function getModelLongDescription(modelName, modelType) {
+    const models = modelType === 'classification' ? categoricalModels : numericalModels;
+    const model = models.find(m => m.name === modelName);
+    
+    if (!model) return 'No additional information available.';
+
+    let longDescription = '';
+
+    switch (modelName) {
+        case 'logistic':
+            longDescription = 'Logistic Regression is a linear model for binary classification. It models the probability of a binary outcome.';
+            break;
+        case 'svc':
+            longDescription = 'Support Vector Machines (SVM) are powerful and versatile. They can perform linear or non-linear classification, regression, and outlier detection.';
+            break;
+        case 'randomforest':
+            longDescription = 'Random Forest is an ensemble learning method that operates by constructing a multitude of decision trees at training time.';
+            break;
+        case 'gradientboosting':
+            longDescription = 'Gradient Boosting builds an ensemble of weak prediction models, typically decision trees, in a stage-wise fashion.';
+            break;
+        case 'xgboost':
+            longDescription = 'XGBoost is an optimized distributed gradient boosting library designed to be highly efficient, flexible and portable.';
+            break;
+        case 'knn':
+            longDescription = 'K-Nearest Neighbors (KNN) is a simple algorithm that stores all available cases and classifies new cases based on a similarity measure.';
+            break;
+        case 'decisiontree':
+            longDescription = 'Decision Trees are a non-parametric supervised learning method used for classification and regression.';
+            break;
+        case 'adaboost':
+            longDescription = 'AdaBoost, short for Adaptive Boosting, is a machine learning meta-algorithm used to boost the performance of decision trees on binary classification problems.';
+            break;
+        case 'bagging':
+            longDescription = 'Bagging is an ensemble meta-algorithm designed to improve the stability and accuracy of machine learning algorithms used in statistical classification and regression.';
+            break;
+        case 'poly':
+            longDescription = 'Polynomial Regression is a form of regression analysis in which the relationship between the independent variable x and the dependent variable y is modeled as an nth degree polynomial.';
+            break;
+        case 'linear':
+            longDescription = 'Linear Regression is a linear approach for modelling the relationship between a scalar response and one or more explanatory variables.';
+            break;
+        case 'ridge':
+            longDescription = 'Ridge Regression is a linear least squares regression with L2 regularization.';
+            break;
+        case 'lasso':
+            longDescription = 'Lasso Regression is a linear model that estimates sparse coefficients with L1 regularization.';
+            break;
+        case 'elasticnet':
+            longDescription = 'Elastic Net is a linear regression model with combined L1 and L2 priors as regularizer.';
+            break;
+        case 'svr':
+            longDescription = 'Support Vector Regression (SVR) is a type of Support Vector Machine algorithm that supports both linear and non-linear regression.';
+            break;
+        default:
+            longDescription = 'No additional information available for this model.';
+    }
+
+    return longDescription;
 }
 
 // ==============================================
