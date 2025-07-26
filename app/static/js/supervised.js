@@ -24,31 +24,182 @@ let splitSettings = {
 
 // Model definitions
 const categoricalModels = [
-    { name: 'logistic', params: [{ name: 'C', value: '1.0' }, { name: 'penalty', value: 'l2' }, { name: 'solver', value: 'lbfgs' }], description: 'Best for simple binary classification with linear data.' },
-    { name: 'svc', params: [{ name: 'C', value: '1.0' }, { name: 'kernel', value: 'rbf' }, { name: 'gamma', value: 'scale' }], description: 'Good for small-to-medium datasets with clear margins (linear or kernel-based). Handles nonlinearity well.' },
-    { name: 'randomforest', params: [{ name: 'n_estimators', value: '100' }, { name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Robust general-purpose classifier, handles nonlinearity well. Good for large datasets.'},
-    { name: 'gradientboosting', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }], description: 'High accuracy for tabular data, great with imbalanced datasets.'},
-    { name: 'xgboost', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }, { name: 'eval_metric', value: 'logloss' }], description: 'Best for structured data, optimized performance.'},
-    { name: 'knn', params: [{ name: 'n_neighbors', value: '5' }], description: 'Works well for small, low-dimensional data with local patterns. Prone to noise and high dimensions.'},
-    { name: 'decisiontree', params: [{ name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Simple and interpretable, but prone to overfitting; good for small datasets.'},
-    { name: 'adaboost', params: [{name: 'n_estimators', value: '50'}, {name: 'learning_rate', value: '1.0'}], description: 'Good for boosting weak learners.'},
-    { name: 'bagging', params: [{name: 'n_estimators', value: '10'}], description: 'Reduces variance, improves stability.'},
+    {
+        name: 'logistic',
+        params: [
+            { name: 'C', value: '1.0', min: 0.01, max: 100 },
+            { name: 'penalty', value: 'l2', options: ['l1', 'l2', 'elasticnet', 'none'] },
+            { name: 'solver', value: 'lbfgs', options: ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'] }
+        ],
+        description: 'Best for simple binary classification with linear data.'
+    },
+    {
+        name: 'svc',
+        params: [
+            { name: 'C', value: '1.0', min: 0.01, max: 100 },
+            { name: 'kernel', value: 'rbf', options: ['linear', 'poly', 'rbf', 'sigmoid'] },
+            { name: 'gamma', value: 'scale', options: ['scale', 'auto'] }
+        ],
+        description: 'Good for small-to-medium datasets with clear margins (linear or kernel-based). Handles nonlinearity well.'
+    },
+    {
+        name: 'randomforest',
+        params: [
+            { name: 'n_estimators', value: '100', min: 10, max: 500 },
+            { name: 'max_depth', value: '2', min: 1, max: 20 },
+            { name: 'min_samples_split', value: '2', min: 2, max: 20 }
+        ],
+        description: 'Robust general-purpose classifier, handles nonlinearity well. Good for large datasets.'
+    },
+    {
+        name: 'gradientboosting',
+        params: [
+            { name: 'n_estimators', value: '100', min: 10, max: 500 },
+            { name: 'learning_rate', value: '0.1', min: 0.01, max: 1 },
+            { name: 'max_depth', value: '3', min: 1, max: 20 }
+        ],
+        description: 'High accuracy for tabular data, great with imbalanced datasets.'
+    },
+    {
+        name: 'xgboost',
+        params: [
+            { name: 'n_estimators', value: '100', min: 10, max: 500 },
+            { name: 'learning_rate', value: '0.1', min: 0.01, max: 1 },
+            { name: 'max_depth', value: '3', min: 1, max: 20 },
+            { name: 'eval_metric', value: 'logloss', options: ['logloss', 'rmse', 'auc', 'error'] }
+        ],
+        description: 'Best for structured data, optimized performance.'
+    },
+    {
+        name: 'knn',
+        params: [
+            { name: 'n_neighbors', value: '5', min: 1, max: 50 }
+        ],
+        description: 'Works well for small, low-dimensional data with local patterns. Prone to noise and high dimensions.'
+    },
+    {
+        name: 'decisiontree',
+        params: [
+            { name: 'max_depth', value: '2', min: 1, max: 20 },
+            { name: 'min_samples_split', value: '2', min: 2, max: 20 }
+        ],
+        description: 'Simple and interpretable, but prone to overfitting; good for small datasets.'
+    },
+    {
+        name: 'adaboost',
+        params: [
+            { name: 'n_estimators', value: '50', min: 10, max: 500 },
+            { name: 'learning_rate', value: '1.0', min: 0.01, max: 1 }
+        ],
+        description: 'Good for boosting weak learners.'
+    },
+    {
+        name: 'bagging',
+        params: [
+            { name: 'n_estimators', value: '10', min: 10, max: 500 }
+        ],
+        description: 'Reduces variance, improves stability.'
+    },
 ];
 
 const numericalModels = [
-    { name: 'poly', params: [{ name: 'degree', value: '2' }], description: 'Accurate for nonlinear relationships when the true trend is polynomial (but prone to overfitting with high degrees).' },
+    {
+        name: 'poly',
+        params: [
+            { name: 'degree', value: '2', min: 1, max: 5 }
+        ],
+        description: 'Accurate for nonlinear relationships when the true trend is polynomial (but prone to overfitting with high degrees).'
+    },
     { name: 'linear', params: [], description: 'Best for simple, linear relationships with low multicollinearity and no overfitting.' },
-    { name: 'ridge', params: [{ name: 'alpha', value: '1.0' }], description: 'Better than linear when multicollinearity exists; good for many correlated features.' },
-    { name: 'lasso', params: [{ name: 'alpha', value: '1.0' }], description: 'Best when feature selection is needed (sparse data) and some coefficients should be zero.' },
-    { name: 'elasticnet', params: [{ name: 'alpha', value: '1.0' }, { name: 'l1_ratio', value: '0.5' }], description: 'Combines Ridge & Lasso benefits; best when both multicollinearity and feature selection are needed.'},
-    { name: 'svr', params: [{ name: 'C', value: '1.0' }, { name: 'kernel', value: 'rbf' }, { name: 'gamma', value: 'scale' }], description: 'Effective for complex, nonlinear relationships, especially with kernel tricks for high-dimensional data. Good for small-to-medium datasets.' },
-    { name: 'randomforest', params: [{ name: 'n_estimators', value: '100' }, { name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Robust general-purpose classifier, handles nonlinearity well. Good for large datasets.'},
-    { name: 'gradientboosting', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }], description: 'High accuracy for tabular data, great with imbalanced datasets.'},
-    { name: 'xgboost', params: [{ name: 'n_estimators', value: '100' }, { name: 'learning_rate', value: '0.1' }, { name: 'max_depth', value: '3' }, { name: 'eval_metric', value: 'logloss' }], description: 'Best for structured data, optimized performance.'},
-    { name: 'knn', params: [{ name: 'n_neighbors', value: '5' }], description: 'Works well for small, low-dimensional data with local patterns. Prone to noise and high dimensions.'},
-    { name: 'decisiontree', params: [{ name: 'max_depth', value: '2' }, { name: 'min_samples_split', value: '2' }], description: 'Simple and interpretable, but prone to overfitting; good for small datasets.'},
-    { name: 'adaboost', params: [{name: 'n_estimators', value: '50'}, {name: 'learning_rate', value: '1.0'}], description: 'Good for boosting weak learners.'},
-    { name: 'bagging', params: [{name: 'n_estimators', value: '10'}], description: 'Reduces variance, improves stability.'},
+    {
+        name: 'ridge',
+        params: [
+            { name: 'alpha', value: '1.0', min: 0.01, max: 100 }
+        ],
+        description: 'Better than linear when multicollinearity exists; good for many correlated features.'
+    },
+    {
+        name: 'lasso',
+        params: [
+            { name: 'alpha', value: '1.0', min: 0.01, max: 100 }
+        ],
+        description: 'Best when feature selection is needed (sparse data) and some coefficients should be zero.'
+    },
+    {
+        name: 'elasticnet',
+        params: [
+            { name: 'alpha', value: '1.0', min: 0.01, max: 100 },
+            { name: 'l1_ratio', value: '0.5', min: 0, max: 1 }
+        ],
+        description: 'Combines Ridge & Lasso benefits; best when both multicollinearity and feature selection are needed.'
+    },
+    {
+        name: 'svr',
+        params: [
+            { name: 'C', value: '1.0', min: 0.01, max: 100 },
+            { name: 'kernel', value: 'rbf', options: ['linear', 'poly', 'rbf', 'sigmoid'] },
+            { name: 'gamma', value: 'scale', options: ['scale', 'auto'] }
+        ],
+        description: 'Effective for complex, nonlinear relationships, especially with kernel tricks for high-dimensional data. Good for small-to-medium datasets.'
+    },
+    {
+        name: 'randomforest',
+        params: [
+            { name: 'n_estimators', value: '100', min: 10, max: 500 },
+            { name: 'max_depth', value: '2', min: 1, max: 20 },
+            { name: 'min_samples_split', value: '2', min: 2, max: 20 }
+        ],
+        description: 'Robust general-purpose classifier, handles nonlinearity well. Good for large datasets.'
+    },
+    {
+        name: 'gradientboosting',
+        params: [
+            { name: 'n_estimators', value: '100', min: 10, max: 500 },
+            { name: 'learning_rate', value: '0.1', min: 0.01, max: 1 },
+            { name: 'max_depth', value: '3', min: 1, max: 20 }
+        ],
+        description: 'High accuracy for tabular data, great with imbalanced datasets.'
+    },
+    {
+        name: 'xgboost',
+        params: [
+            { name: 'n_estimators', value: '100', min: 10, max: 500 },
+            { name: 'learning_rate', value: '0.1', min: 0.01, max: 1 },
+            { name: 'max_depth', value: '3', min: 1, max: 20 },
+            { name: 'eval_metric', value: 'logloss', options: ['logloss', 'rmse', 'auc', 'error'] }
+        ],
+        description: 'Best for structured data, optimized performance.'
+    },
+    {
+        name: 'knn',
+        params: [
+            { name: 'n_neighbors', value: '5', min: 1, max: 50 }
+        ],
+        description: 'Works well for small, low-dimensional data with local patterns. Prone to noise and high dimensions.'
+    },
+    {
+        name: 'decisiontree',
+        params: [
+            { name: 'max_depth', value: '2', min: 1, max: 20 },
+            { name: 'min_samples_split', value: '2', min: 2, max: 20 }
+        ],
+        description: 'Simple and interpretable, but prone to overfitting; good for small datasets.'
+    },
+    {
+        name: 'adaboost',
+        params: [
+            { name: 'n_estimators', value: '50', min: 10, max: 500 },
+            { name: 'learning_rate', value: '1.0', min: 0.01, max: 1 }
+        ],
+        description: 'Good for boosting weak learners.'
+    },
+    {
+        name: 'bagging',
+        params: [
+            { name: 'n_estimators', value: '10', min: 10, max: 500 }
+        ],
+        description: 'Reduces variance, improves stability.'
+    },
 ];
 
 // ==============================================
@@ -733,23 +884,54 @@ function renderModelParameterInputs(model) {
  */
 function renderModelParameterInputs(model) {
     let inputs = '';
-    
+
     model.params.forEach(param => {
         // Get the current value from modelParams or fall back to default
         const currentValue = modelParams[model.name]?.[param.name] || param.value;
-        
+
+        let inputElement;
+
+        if (param.options) {
+            // Render dropdown list
+            inputElement = `
+                <select class="param-input form-control"
+                        data-model="${model.name}"
+                        data-param="${param.name}">
+                    ${param.options.map(option => `
+                        <option value="${option}" ${currentValue === option ? 'selected' : ''}>${option}</option>
+                    `).join('')}
+                </select>
+            `;
+        } else {
+            // Render text input with up/down controls
+            let step = Number.isInteger(parseFloat(param.value)) ? 1 : 0.1;
+            if (param.min === 0.01) {
+                step = 0.01; // Force step to 0.01 if min is 0.01
+            }
+            const min = param.min !== undefined ? `min="${param.min}"` : '';
+            const max = param.max !== undefined ? `max="${param.max}"` : '';
+
+            inputElement = `
+                <div class="number-input-container">
+                    <input type="number" class="param-input number-input form-control"
+                           data-model="${model.name}"
+                           data-param="${param.name}"
+                           value="${currentValue}"
+                           placeholder="${param.value}"
+                           step="${step}"
+                           ${min} ${max}>
+                </div>
+            `;
+        }
+
         inputs += `
             <div class="param-control">
                 <label>${param.name}:</label>
-                <input type="text" class="param-input" 
-                       data-model="${model.name}" 
-                       data-param="${param.name}" 
-                       value="${currentValue}"
-                       placeholder="${param.value}">
+                ${inputElement}
             </div>
         `;
     });
-    
+
     return inputs;
 }
 
@@ -1163,18 +1345,66 @@ function setupModelSelectionControls() {
  */
 function setupParameterInputControls() {
     // Use event delegation for dynamically created inputs
-    document.addEventListener('input', function(e) {  // Changed from 'change' to 'input'
+    document.addEventListener('input', function (e) {  // Changed from 'change' to 'input'
         if (e.target && e.target.classList.contains('param-input')) {
             const model = e.target.dataset.model;
             const param = e.target.dataset.param;
-            const value = e.target.value;
-            
+            let value = e.target.value;
+
             if (!modelParams[model]) {
                 modelParams[model] = {};
             }
-            
+
             // Store the parameter value
             modelParams[model][param] = value;
+        }
+    });
+
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('param-input')) {
+            const model = e.target.dataset.model;
+            const param = e.target.dataset.param;
+            let value = e.target.value;
+
+            if (!modelParams[model]) {
+                modelParams[model] = {};
+            }
+
+            // Store the parameter value
+            modelParams[model][param] = value;
+        }
+    });
+
+    // Event listeners for the up/down buttons
+    document.addEventListener('click', function (e) {
+        if (e.target && (e.target.classList.contains('number-input-up') || e.target.classList.contains('number-input-down'))) {
+            const targetId = e.target.dataset.target;
+            const step = parseFloat(e.target.dataset.step);
+            const isUp = e.target.classList.contains('number-input-up');
+
+            // Find the input element by constructing the ID
+            const inputElement = document.querySelector(`.param-input[data-model="${targetId.split('-')[0]}" ][data-param="${targetId.split('-')[1]}"]`);
+
+            if (inputElement) {
+                let currentValue = parseFloat(inputElement.value);
+
+                if (isNaN(currentValue)) {
+                    currentValue = parseFloat(inputElement.placeholder) || 0;
+                }
+
+                let newValue = isUp ? currentValue + step : currentValue - step;
+
+                // Respect min/max attributes
+                if (inputElement.hasAttribute('min')) {
+                    newValue = Math.max(newValue, parseFloat(inputElement.getAttribute('min')));
+                }
+                if (inputElement.hasAttribute('max')) {
+                    newValue = Math.min(newValue, parseFloat(inputElement.getAttribute('max')));
+                }
+
+                inputElement.value = newValue.toFixed(step.toString().split('.')[1]?.length || 0);
+                inputElement.dispatchEvent(new Event('input')); // Trigger input event to update state
+            }
         }
     });
 }

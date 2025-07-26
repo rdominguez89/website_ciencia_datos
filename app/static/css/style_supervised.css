@@ -604,22 +604,25 @@ input:focus, select:focus, textarea:focus {
 }
 
 .param-control {
-    display: block;
+    display: flex;
     cursor: pointer;
-    align-items: center;
-    gap: 8px;
+    align-items:left;
 }
 
 .param-control label {
     min-width: 100px;
     font-size: 0.9em;
+    text-align: left; /* Align label text to the right */
+
 }
 
-.param-control input {
+.param-control input,
+.param-control select {
     padding: 5px 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
     width: auto;
+    flex-grow: 1; /* Allow input/select to take remaining space */
 }
 
 .cv-options {
@@ -693,7 +696,7 @@ input:focus, select:focus, textarea:focus {
     margin-left: 5px;   /* Keep a small margin */
     cursor: pointer;
     color: #63b3ed;     /* Light blue color */
-    padding: 2px 5px;       /* Add some padding around the icon */
+    padding: 5px 5px;       /* Add some padding around the icon */
     border-radius: 4px; /* Optional: round the corners */
     z-index: 2; /* Ensure it's above other elements */
 }
@@ -729,6 +732,19 @@ input:focus, select:focus, textarea:focus {
     z-index: 1;
 }
 
+/* Style for number input with up/down controls */
+.number-input-container {
+    display: flex;
+    align-items: center;
+}
+
+.number-input {
+    width: 80px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+}
 
 
 
