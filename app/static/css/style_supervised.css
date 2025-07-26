@@ -686,16 +686,51 @@ input:focus, select:focus, textarea:focus {
     100% { background-position: -200% 0; }
 }
 
-/* Style for the info icon */
 .model-info {
-    margin-left: 5px;
+    position: absolute; /* Use absolute positioning */
+    bottom: 0;          /* Align to the bottom */
+    left: 0;            /* Align to the left */
+    margin-left: 5px;   /* Keep a small margin */
     cursor: pointer;
-    color: #63b3ed; /* Light blue color */
+    color: #63b3ed;     /* Light blue color */
+    padding: 2px 5px;       /* Add some padding around the icon */
+    border-radius: 4px; /* Optional: round the corners */
+    z-index: 2; /* Ensure it's above other elements */
 }
 
 .model-info i {
     font-size: 1em;
+    display: block;     /* Make the icon a block-level element */
 }
+
+.model-option-box {
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 12px;
+    position: relative; /* Add relative positioning to the container */
+}
+
+/* Tooltip styles */
+.model-info:hover::before {
+    content: attr(title); /* Use the title attribute as the tooltip text */
+    position: absolute;
+    bottom: 100%; /* Position above the icon */
+    left: 500%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    white-space: normal; /* Allow text to wrap */
+    word-wrap: break-word; /* Break long words */
+    min-width: 200px; /* Minimum width for the tooltip */
+    max-width: 300px; /* Limit the width of the tooltip */
+    z-index: 1;
+}
+
+
+
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -781,3 +816,4 @@ input:focus, select:focus, textarea:focus {
         -webkit-overflow-scrolling: touch;
     }
 }
+
