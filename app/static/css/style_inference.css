@@ -521,6 +521,7 @@ input:focus, select:focus, textarea:focus {
 @media (max-width: 768px) {
     .column-option {
         flex: 1 0 calc(50% - 10px);
+        min-width: auto; /* Allow columns to shrink on smaller screens */
     }
 
     .container {
@@ -537,4 +538,34 @@ input:focus, select:focus, textarea:focus {
         grid-template-columns: 1fr;
     }
 
+    /* Adjustments for distribution inputs */
+    #distributionInputs {
+        padding: 10px;
+    }
+
+    #distributionInputs label {
+        margin-bottom: 3px;
+    }
+
+    #distributionInputs input[type="number"],
+    #distributionInputs select {
+        margin-bottom: 8px;
+        padding: 6px;
+    }
+
+    /* Adjustments for probability space */
+    #probabilitySpaceDiv {
+        padding: 10px;
+    }
+
+    /* Ensure buttons in probability space wrap */
+    #probabilitySpaceDiv > button {
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+
+    /* General input adjustments */
+    input, select, textarea {
+        padding: 6px 10px;
+    }
 }
