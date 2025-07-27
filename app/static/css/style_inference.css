@@ -568,4 +568,10 @@ input:focus, select:focus, textarea:focus {
     input, select, textarea {
         padding: 6px 10px;
     }
+
+    /* Distribution select adjustments */
+    #distributionSelect {
+        width: 100%; /* Make the select box take the full width */
+        box-sizing: border-box; /* Include padding and border in the element's total width */
+    }
 }
