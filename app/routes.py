@@ -10,6 +10,7 @@ from flask_talisman import Talisman
 from werkzeug.exceptions import HTTPException
 from .utils import allowed_file, load_dataframe, get_stats_summary, clean_dataframe, create_visualizations_function, remove_outliers_function, create_correlation_plots_function, save_dataframe
 from .analyze_supervised import analyze_data
+from .analyze_inference import perform_one_sample_ttest, perform_correlation, analyze_distribution
 from flask_cors import CORS
 from traceback import format_exc
 
@@ -222,3 +223,32 @@ def analyze():
     except Exception as e:
         current_app.logger.error(f"Analysis failed: {str(e)}\n{format_exc()}")
         return jsonify({'error': str(e), 'error_type': type(e).__name__, 'success': False}), 400
+
+@bp.route('/api/analyze_inference', methods=['POST'])
+@limiter.limit("5 per minute")
+def analyze_inference():
+    """Perform statistical inference based on user input."""
+    try:
+        data = request.json
+        test_type = data['testType']
+
+        if test_type == 'h0':
+            numeric_data = data['data']
+            population_mean = float(data['populationMean'])
+            significance_level = float(data['significanceLevel'])
+            result = perform_one_sample_ttest(numeric_data, population_mean, significance_level)
+        elif test_type == 'correlation':
+            data_obj = data['data']
+            column1 = data['column1']
+            column2 = data['column2']
+            method = data.get('correlationMethod', 'pearson')
+            result = perform_correlation(data_obj, column1, column2, method, data.get('producePlot', False))
+        else:
+            outcomes = data['data']
+            distribution = data['distribution']
+            params = data['params']
+            result = analyze_distribution(outcomes, distribution, params)
+
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e), 'plot': None}), 400
