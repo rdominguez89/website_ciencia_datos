@@ -118,7 +118,7 @@ def perform_correlation(data, column1, column2, method, produce_plot=False):
         # else:
         plot_data = None
         if method != 'cramer' and produce_plot:
-            plt.figure(figsize=(5,5))  # Let matplotlib handle the default size
+            plt.figure(figsize=(6,5))  # Let matplotlib handle the default size
             plt.scatter(col1_data, col2_data, alpha=0.7, edgecolors='w', linewidth=0.5)
             plt.xlabel(column1, fontsize=10)
             plt.ylabel(column2, fontsize=10)

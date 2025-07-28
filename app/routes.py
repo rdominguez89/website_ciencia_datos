@@ -230,6 +230,23 @@ def analyze_inference():
     """Perform statistical inference based on user input."""
     try:
         data = request.json
+
+        # New: Check data size limits (max rows and max columns).
+        MAX_ROWS = 1000
+        MAX_COLUMNS = 13
+        data_field = data.get('data')
+        if data_field is None:
+            return jsonify({'success': False, 'message': "Data not provided", 'plot': None}), 400
+            
+        if data_field is not None:
+            df = pd.DataFrame(data_field)
+            if df.shape[0] > MAX_ROWS or df.shape[1] > MAX_COLUMNS:
+                return jsonify({
+                    'success': False, 
+                    'message': f"Data exceeds maximum columns limit of {MAX_COLUMNS}.", 
+                    'plot': None
+                }), 400
+                
         test_type = data['testType']
 
         if test_type == 'h0':

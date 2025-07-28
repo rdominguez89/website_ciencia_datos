@@ -64,7 +64,7 @@ function renderObjectInput(dataPreview, hypothesis) {
 
 function createObjectInputHTML() {
     return `
-        <h3>Enter Data as a dictionary or upload a CSV:</h3>
+        <h3>Enter Data as a dictionary (Option 1) or upload a CSV (Option 2):</h3>
         <p>Example: <code>{"col_1": [1, 2, 3], "col_2": [4, 5, 6]}</code></p>
         <div style="display: flex;">
             <textarea id="objectDataInput" rows="6" cols="25" style="margin-right: 10px;"></textarea>
@@ -103,11 +103,19 @@ function setupCSVUploadListeners(dataPreview, hypothesis) {
 function handleCSVUpload(dataPreview, hypothesis, csvFile) {
     resetAnalysis(dataPreview);
     const file = csvFile.files[0];
+    if (file.size > MAX_FILE_SIZE) {
+        alert("File size exceeds 5MB limit.");
+        return;
+    }
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
             const csvData = e.target.result;
             const parsedData = parseCSVData(csvData);
+            if (Object.keys(parsedData).length === 0) {
+                // If parsing returns an empty object because of limitations, do not proceed.
+                return;
+            }
             if (hypothesis === 'h0') {
                 renderH0Inputs(dataPreview, parsedData);
             } else if (hypothesis === 'correlation') {
@@ -313,7 +321,7 @@ function createDistributionInputsHTML(distribution) {
                 <label>Lower Bound (a):</label>
                 <input type="number" id="normalLowerBound" value="1">
                 <label>Upper Bound (b):</label>
-                <input type="number" id="normalUpperBound" value="1">
+                <input type="number" id="normalUpperBound" value="2">
             </div>
             <div id="seekOptionsContainer">
                 <div id="seekValueContainer">
@@ -730,10 +738,21 @@ function collectDistributionParams(distType) {
 
 // Data Processing
 function parseCSVData(csvData) {
-    const lines = csvData.split('\n');
+    const lines = csvData.split('\n').filter(line => line.trim() !== "");
+    
+    // Check row limit (excluding header)
+    if (lines.length - 1 > MAX_ROWS) {
+        alert("CSV file exceeds maximum allowed rows (" + MAX_ROWS + ").");
+        return {};
+    }
     const headers = lines[0].split(',').map(header => header.trim());
-    const data = {};
+    // Check column limit
+    if (headers.length > MAX_COLUMNS) {
+        alert("CSV file exceeds maximum allowed columns (" + MAX_COLUMNS + ").");
+        return {};
+    }
 
+    const data = {};
     headers.forEach(header => {
         data[header] = [];
     });
@@ -741,9 +760,8 @@ function parseCSVData(csvData) {
     for (let i = 1; i < lines.length; i++) {
         const values = lines[i].split(',');
         if (values.every(value => value === "")) continue;
-
         for (let j = 0; j < headers.length; j++) {
-            let value = values[j].trim();
+            let value = values[j] ? values[j].trim() : "";
             const num = Number(value);
             if (!isNaN(num) && value !== "") {
                 data[headers[j]].push(num);
@@ -752,7 +770,6 @@ function parseCSVData(csvData) {
             }
         }
     }
-
     return data;
 }
 
@@ -1023,3 +1040,8 @@ function showErrorToast(message) {
 
 // Start the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initializeInference);
+
+// Add these constants near the top (after other global code)
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB limit
+const MAX_ROWS = 1000;
+const MAX_COLUMNS = 13;
