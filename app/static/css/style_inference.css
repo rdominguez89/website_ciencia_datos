@@ -54,9 +54,10 @@ h1 {
 }
 
 .upload-section {
-    display: inline-flex;
+    display: flex;
     gap: 1rem;
     align-items: center;
+    width: 75%; /* Adjust width to take up approximately half the container */
 }
 
 .custom-file-upload {
@@ -68,6 +69,10 @@ h1 {
     font-weight: 500;
     transition: all 0.3s ease;
     background-color: transparent;
+    display: inline-block; /* Ensure proper alignment */
+    text-align: center; /* Center the text */
+    width: 100%; /* Occupy full width of the upload section */
+    box-sizing: border-box; /* Include padding and border in the element's total width */
 }
 
 .custom-file-upload:hover {
@@ -86,6 +91,10 @@ h1 {
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     font-weight: 500;
+    display: inline-block; /* Ensure proper alignment */
+    text-align: center; /* Center the text */
+    width: 100%; /* Occupy full width of the upload section */
+    box-sizing: border-box; /* Include padding and border in the element's total width */
 }
 
 #uploadBtn:hover {
@@ -102,12 +111,17 @@ h1 {
 }
 
 /* Data Preview Section */
+/* Data Preview Section */
 #dataPreview {
     background: #2d3748;
     padding: 20px;
     border-radius: 8px;
     margin-top: 20px;
     border: 1px solid #4a5568;
+    max-width: 694px; /* Added to match container width */
+    margin-left: auto; /* Center the container */
+    margin-right: auto; /* Center the container */
+    margin-bottom: 6rem; /* Added to match container bottom margin */
 }
 
 #hypothesisSection {
@@ -515,6 +529,30 @@ input:focus, select:focus, textarea:focus {
     outline: none; /* Remove the default focus outline */
     border-color: #63b3ed; /* Change the border color on focus */
     box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.3); /* Add a subtle shadow */
+}
+
+/* Style for result-entry */
+.result-entry {
+    background-color: #374151; /* A slightly lighter background */
+    border: 1px solid #4a5568;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center content within result entry */
+}
+
+.result-entry p {
+    color: #cbd5e0; /* A softer text color */
+    margin-bottom: 10px;
+    padding: 0 10px; /* Add some padding to the sides of the text */
+}
+
+.result-entry img.thumbnail-image {
+    display: block; /* Ensure the image takes up the full width */
+    margin: 10px auto; /* Center the image horizontally */
+    max-width: 100%; /* Make sure image doesn't exceed container width */
+    height: auto; /* Maintain aspect ratio */
 }
 
 /* Responsive */

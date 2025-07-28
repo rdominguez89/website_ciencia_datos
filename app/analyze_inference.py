@@ -118,11 +118,15 @@ def perform_correlation(data, column1, column2, method, produce_plot=False):
         # else:
         plot_data = None
         if method != 'cramer' and produce_plot:
-            plt.figure(figsize=(8, 6))
-            plt.scatter(col1_data, col2_data)
-            plt.xlabel(column1)
-            plt.ylabel(column2)
-            plt.title(f'{test_name}: {column1} vs {column2}')
+            plt.figure(figsize=(5,5))  # Let matplotlib handle the default size
+            plt.scatter(col1_data, col2_data, alpha=0.7, edgecolors='w', linewidth=0.5)
+            plt.xlabel(column1, fontsize=10)
+            plt.ylabel(column2, fontsize=10)
+            plt.title(f'{test_name}: {column1} vs {column2}', fontsize=12, fontweight='bold')
+            plt.grid(True, linestyle='--', alpha=0.5)  # Add a subtle grid
+            plt.xticks(fontsize=8)  # Adjust tick label size
+            plt.yticks(fontsize=8)
+            plt.tight_layout()  # Ensure labels don't overlap
         
             buffer = io.BytesIO()
             plt.savefig(buffer, format='png')

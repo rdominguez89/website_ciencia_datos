@@ -66,16 +66,18 @@ function createObjectInputHTML() {
     return `
         <h3>Enter Data as Object:</h3>
         <p>Example: <code>{"col_1": [1, 2, 3], "col_2": [4, 5, 6]}</code></p>
-        <textarea id="objectDataInput" rows="6" cols="50"></textarea>
-        <div class="object-input-actions" style="display: flex; justify-content: space-between; align-items: center;">
-            <button id="analyzeObjectBtn">Analyze Object</button>
+        <div style="display: flex;">
+            <textarea id="objectDataInput" rows="6" cols="25" style="margin-right: 10px;"></textarea>
             <div class="upload-section" style="text-align: right;">
                 <label for="csvFile" class="custom-file-upload">
                     <span id="fileLabel">Choose CSV File</span>
                     <input type="file" id="csvFile" accept=".csv" style="display: none;">
                 </label>
-                <button id="uploadBtn">Upload CSV</button>
+                <button id="uploadBtn">Upload Chosen CSV (Option 2)</button>
             </div>
+        </div>
+        <div class="object-input-actions" style="display: flex; justify-content: space-between; align-items: center;">
+            <button id="analyzeObjectBtn">Upload Dictionary (Option 1)</button>
         </div>
     `;
 }
@@ -83,6 +85,15 @@ function createObjectInputHTML() {
 function setupCSVUploadListeners(dataPreview, hypothesis) {
     const uploadBtn = document.querySelector('.upload-section #uploadBtn');
     const csvFile = document.querySelector('.upload-section #csvFile');
+    
+    // Initially disable the upload button
+    uploadBtn.disabled = true;
+
+    // Listen for changes in the file input
+    csvFile.addEventListener('change', function() {
+        // Enable the upload button if a file has been selected
+        uploadBtn.disabled = !csvFile.files.length;
+    });
     
     uploadBtn.addEventListener('click', function() {
         handleCSVUpload(dataPreview, hypothesis, csvFile);
