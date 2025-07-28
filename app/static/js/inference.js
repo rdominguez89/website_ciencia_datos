@@ -339,7 +339,7 @@ function createDistributionInputsHTML(distribution) {
                 <div id="seekProbabilityContainer">
                     <label>
                         <input type="checkbox" id="normalSeekProbabilityCheckbox">
-                        Seek Probability:
+                        Seek Probability %:
                     </label>
                     <input type="number" id="normalSeekProbability" value="50" min="0" max="100" step="1" disabled>
                 </div>
@@ -483,6 +483,14 @@ function createMultinomialHTML() {
                     <label>Number of Successes:</label>
                     <input type="number" class="outcomeSuccesses" value="1" min="1" step="1">
                 </div>
+                <div class="outcome">
+                    <label>Outcome 2:</label>
+                    <input type="text" class="outcomeName" value="Outcome 2">
+                    <label>Event Probability:</label>
+                    <input type="number" class="outcomeProbability" value="0.5" min="0" max="1" step="0.01">
+                    <label>Number of Successes:</label>
+                    <input type="number" class="outcomeSuccesses" value="1" min="1" step="1">
+                </div>
             </div>
             <button id="addOutcomeBtn">Add Outcome</button>
         </div>
@@ -574,10 +582,35 @@ function setupOutcomeControls(distType) {
         addNewOutcome(distType);
     });
 
+    // For multinomial, require at least 2 outcomes
     if (distType === 'multinomial' || (distType !== 'binomial' && distType !== 'uniform' && distType !== 'normal')) {
-        const removeOutcomeBtn = createRemoveOutcomeButton();
+        const removeOutcomeBtn = createRemoveOutcomeButton(distType);
         document.getElementById('probabilitySpaceDiv').appendChild(removeOutcomeBtn);
     }
+}
+
+function createRemoveOutcomeButton(distType) {
+    const removeOutcomeBtn = document.createElement('button');
+    removeOutcomeBtn.id = 'removeOutcomeBtn';
+    removeOutcomeBtn.textContent = 'Remove Outcome';
+
+    // Set minimum outcomes required: 2 for multinomial, else 1.
+    const minOutcomes = (distType === 'multinomial') ? 2 : 1;
+    removeOutcomeBtn.disabled = document.querySelectorAll('.outcome').length <= minOutcomes;
+    
+    removeOutcomeBtn.addEventListener('click', function() {
+        const outcomeElements = document.querySelectorAll('.outcome');
+        if (distType === 'multinomial' && outcomeElements.length > 2) {
+            outcomeElements[outcomeElements.length - 1].remove();
+        } else if (distType !== 'multinomial' && outcomeElements.length > 1) {
+            outcomeElements[outcomeElements.length - 1].remove();
+        }
+        // Update disabled state based on updated outcomes count
+        const currentCount = document.querySelectorAll('.outcome').length;
+        removeOutcomeBtn.disabled = currentCount <= ((distType === 'multinomial') ? 2 : 1);
+    });
+    
+    return removeOutcomeBtn;
 }
 
 function addNewOutcome(distType) {
@@ -595,51 +628,10 @@ function addNewOutcome(distType) {
     
     const removeOutcomeBtn = document.getElementById('removeOutcomeBtn');
     if (removeOutcomeBtn) {
-        removeOutcomeBtn.disabled = document.querySelectorAll('.outcome').length <= 1;
+        const minOutcomes = distType === 'multinomial' ? 2 : 1;
+        removeOutcomeBtn.disabled = document.querySelectorAll('.outcome').length <= minOutcomes;
     }
 }
-
-function createNewOutcomeHTML(distType, outcomeCount, previousProbability) {
-    if (distType === 'multinomial') {
-        return `
-            <div class="outcome">
-                <label>Outcome ${outcomeCount}:</label>
-                <input type="text" class="outcomeName" value="Outcome ${outcomeCount}">
-                <label>Event Probability:</label>
-                <input type="number" class="outcomeProbability" value="${previousProbability}" min="0" max="1" step="0.01">
-                <label>Number of Successes:</label>
-                <input type="number" class="outcomeSuccesses" value="1" min="1" step="1">
-            </div>
-        `;
-    } else {
-        return `
-            <div class="outcome">
-                <label>Outcome ${outcomeCount}:</label>
-                <input type="text" class="outcomeName" value="Outcome ${outcomeCount}">
-                <label>Event Probability:</label>
-                <input type="number" class="outcomeProbability" value="${previousProbability}" min="0" max="1" step="0.01">
-            </div>
-        `;
-    }
-}
-
-function createRemoveOutcomeButton() {
-    const removeOutcomeBtn = document.createElement('button');
-    removeOutcomeBtn.id = 'removeOutcomeBtn';
-    removeOutcomeBtn.textContent = 'Remove Outcome';
-    removeOutcomeBtn.disabled = true;
-    
-    removeOutcomeBtn.addEventListener('click', function() {
-        const outcomeElements = document.querySelectorAll('.outcome');
-        if (outcomeElements.length > 1) {
-            outcomeElements[outcomeElements.length - 1].remove();
-        }
-        this.disabled = document.querySelectorAll('.outcome').length <= 1;
-    });
-    
-    return removeOutcomeBtn;
-}
-
 function setupProbabilityAnalysisButton(distType) {
     const analyzeProbabilityBtn = document.createElement('button');
     analyzeProbabilityBtn.id = 'analyzeProbabilityBtn';
@@ -1050,3 +1042,29 @@ document.addEventListener('DOMContentLoaded', initializeInference);
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB limit
 const MAX_ROWS = 1000;
 const MAX_COLUMNS = 13;
+
+function createNewOutcomeHTML(distType, outcomeCount, previousProbability) {
+    let html = '';
+    if (distType === 'multinomial') {
+        html = `
+            <div class="outcome">
+                <label>Outcome ${outcomeCount}:</label>
+                <input type="text" class="outcomeName" value="Outcome ${outcomeCount}">
+                <label>Event Probability:</label>
+                <input type="number" class="outcomeProbability" value="${previousProbability}" min="0" max="1" step="0.01">
+                <label>Number of Successes:</label>
+                <input type="number" class="outcomeSuccesses" value="1" min="1" step="1">
+            </div>
+        `;
+    } else {
+        html = `
+            <div class="outcome">
+                <label>Outcome ${outcomeCount}:</label>
+                <input type="text" class="outcomeName" value="Outcome ${outcomeCount}">
+                <label>Event Probability:</label>
+                <input type="number" class="outcomeProbability" value="${previousProbability}" min="0" max="1" step="0.01">
+            </div>
+        `;
+    }
+    return html;
+}

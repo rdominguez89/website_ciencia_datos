@@ -221,9 +221,9 @@ def analyze_distribution(outcomes, distribution, params):
         elif distribution == 'uniform':
             b = float(params['total'])
             a = float(params['favorable'])
-            x = np.linspace(a, b, 100)
-            y = uniform.pdf(x, loc=a, scale=b - a)
-            message = f"Uniform Distribution analyzed for {outcomes[0]['name']} from {a} to {b} is {(a/b):.2f}%."
+            # x = np.linspace(a, b, 100)
+            # y = uniform.pdf(x, loc=a, scale=b - a)
+            message = f"Uniform Distribution analyzed for {outcomes[0]['name']} from {a} to {b} is {(100*a/b):.2f}%."
             # (Optional plotting code)
             return {'success': True, 'message': message, 'plot': None}
         elif distribution == 'normal':
