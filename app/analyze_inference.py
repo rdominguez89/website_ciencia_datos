@@ -122,7 +122,7 @@ def perform_correlation(data, column1, column2, method, produce_plot=False):
             plt.scatter(col1_data, col2_data, alpha=0.7, edgecolors='w', linewidth=0.5)
             plt.xlabel(column1, fontsize=10)
             plt.ylabel(column2, fontsize=10)
-            plt.title(f'{test_name}/n{column1} vs {column2}', fontsize=12, fontweight='bold')
+            plt.title(f'{test_name}\n{column1} vs {column2}', fontsize=12, fontweight='bold')
             plt.grid(True, linestyle='--', alpha=0.5)  # Add a subtle grid
             plt.xticks(fontsize=8)  # Adjust tick label size
             plt.yticks(fontsize=8)
