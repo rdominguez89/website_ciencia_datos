@@ -5,7 +5,19 @@ let currentDF = null;
 // Initialization Functions
 function initializeEventListeners() {
     // Main upload button handler
-    document.getElementById('uploadBtn').addEventListener('click', handleFileUpload);
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('csvFile');
+
+    // Initially disable the upload button
+    uploadBtn.disabled = true;
+
+    // Listen for changes in the file input
+    fileInput.addEventListener('change', function() {
+        // Enable the upload button if a file has been selected
+        uploadBtn.disabled = !fileInput.files.length;
+    });
+
+    uploadBtn.addEventListener('click', handleFileUpload);
 }
 
 // File Upload and Processing

@@ -218,7 +218,18 @@ function initializeApp() {
  * Set up the upload button event listener
  */
 function setupUploadButton() {
-    document.getElementById('uploadBtn').addEventListener('click', handleFileUpload);
+    const uploadBtn = document.getElementById('uploadBtn');
+    uploadBtn.addEventListener('click', handleFileUpload);
+    
+    // Initially disable the upload button
+    uploadBtn.disabled = true;
+
+    // Listen for changes in the file input
+    const fileInput = document.getElementById('csvFile');
+    fileInput.addEventListener('change', function() {
+        // Enable the upload button if a file is selected
+        uploadBtn.disabled = !fileInput.files.length;
+    });
 }
 
 /**
