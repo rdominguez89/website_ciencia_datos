@@ -354,8 +354,14 @@ function setupNormalDistributionListeners() {
     // Set initial state for non-range conditions.
     normalCondition.value = ">=";
     rangeInputs.style.display = 'none';
-    seekValueInput.style.display = 'inline-block';
-    seekProbabilityInput.style.display = 'inline-block';
+    // By default, if seek value is checked, show its input and hide seek probability input.
+    if (seekValueCheckbox.checked) {
+        seekValueInput.style.display = 'inline-block';
+        seekProbabilityInput.style.display = 'none';
+    } else if (seekProbabilityCheckbox.checked) {
+        seekProbabilityInput.style.display = 'inline-block';
+        seekValueInput.style.display = 'none';
+    }
 
     // Helper to update the default range values based on the selected seek option.
     function updateRangeDefaults() {
@@ -373,39 +379,48 @@ function setupNormalDistributionListeners() {
     normalCondition.addEventListener('change', function() {
         if (this.value === 'range' || this.value === 'out_of_range') {
             rangeInputs.style.display = 'block';
-            // Hide the seek input fields while keeping checkboxes visible
+            // Hide both seek input fields while keeping checkboxes visible
             seekValueInput.style.display = 'none';
             seekProbabilityInput.style.display = 'none';
-            // Do not update defaults here in order to preserve user-entered values.
-            // updateRangeDefaults();  <-- Removed this call.
+            // Do not call updateRangeDefaults here so that user-entered values are preserved.
         } else {
             rangeInputs.style.display = 'none';
-            // Show the seek input fields based on current checkbox states
-            seekValueInput.style.display = 'inline-block';
-            seekProbabilityInput.style.display = 'inline-block';
+            // Restore the appropriate seek input based on which checkbox is checked
+            if (seekValueCheckbox.checked) {
+                seekValueInput.style.display = 'inline-block';
+                seekProbabilityInput.style.display = 'none';
+            } else if (seekProbabilityCheckbox.checked) {
+                seekProbabilityInput.style.display = 'inline-block';
+                seekValueInput.style.display = 'none';
+            }
         }
     });
     
-    // Setup mutual exclusion for Seek Value and Seek Probability checkboxes,
-    // and manage enabling/disabling of their corresponding input fields.
+    // When the Seek Value checkbox is clicked:
     seekValueCheckbox.addEventListener('change', function() {
         if (this.checked) {
-            seekValueInput.disabled = false;
+            // Show the seek value input and hide the seek probability input
+            seekValueInput.style.display = 'inline-block';
             seekProbabilityCheckbox.checked = false;
-            seekProbabilityInput.disabled = true;
-            updateRangeDefaults(); // update defaults when seek option changes
+            seekProbabilityInput.style.display = 'none';
+            updateRangeDefaults();
+        } else {
+            // Ensure one option always remains selected; reselect this option.
+            seekValueCheckbox.checked = true;
         }
     });
     
+    // When the Seek Probability checkbox is clicked:
     seekProbabilityCheckbox.addEventListener('change', function() {
         if (this.checked) {
-            seekProbabilityInput.disabled = false;
+            // Show the seek probability input and hide the seek value input
+            seekProbabilityInput.style.display = 'inline-block';
             seekValueCheckbox.checked = false;
-            seekValueInput.disabled = true;
-            updateRangeDefaults(); // update defaults when seek option changes
+            seekValueInput.style.display = 'none';
+            updateRangeDefaults();
         } else {
-            seekValueCheckbox.checked = true;
-            seekValueInput.disabled = false;
+            // Ensure one option always remains selected; reselect this option.
+            seekProbabilityCheckbox.checked = true;
         }
     });
 }
