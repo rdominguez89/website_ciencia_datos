@@ -236,35 +236,35 @@ def analyze_distribution(outcomes, distribution, params):
                 y2 = norm.cdf(x2, loc=mu, scale=sigma)
                 if params['condition'] == 'out_of_range':
                     y = y1 + (1-y2)
-                    message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} outside the range {x1} to {x2} is {(100*y):.2f}%."
+                    message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} ≤ {x1} and {outcomes[0]['name']} ≥ {x2} is {(100*y):.2f}%."
                 else:
                     y = abs(y2 - y1)
-                    message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} between {x1} and {x2} is {(100*y):.2f}%."
+                    message = f"Normal Distribution: The probability of observing {x1} ≤ {outcomes[0]['name']} ≤ {x2} is {(100*y):.2f}%."
             elif params['seekOption'] == 'value':
                 x = float(params['seekValue'])
                 y = norm.cdf(x, loc=mu, scale=sigma)
                 if params['condition'] == '<=':
-                    message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} less than or equal to {params['seekValue']} is {(100*y):.2f}%."
+                    message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} ≤ {params['seekValue']} is {(100*y):.2f}%."
                 elif params['condition'] == '>=':
-                    message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} greater than or equal to {params['seekValue']} is {(100*(1-y)):.2f}%."
+                    message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} ≥ {params['seekValue']} is {(100*(1-y)):.2f}%."
             elif params['seekOption'] == 'probability' and (params['condition'] == 'range' or  params['condition'] == 'out_of_range'):
                 p1 = float(params['lowerBound']) if float(params['lowerBound']) < 1 else float(params['lowerBound'])/100
                 p2 = float(params['upperBound']) if float(params['upperBound']) < 1 else float(params['upperBound'])/100
                 x1 = norm.ppf(p1, loc=mu, scale=sigma)
                 x2 = norm.ppf(p2, loc=mu, scale=sigma)
                 if params['condition'] == 'out_of_range':
-                    message = f"Normal Distribution: The values of {outcomes[0]['name']} to observe probability outside the range {(p1*100):.2f}% and {(p2*100):.2f}% are below {x1:.2f} or above {x2:.2f}."
+                    message = f"Normal Distribution: To observe probability ≤ {(p1*100):.2f}% and probability ≥ {(p2*100):.2f}% the values are {outcomes[0]['name']} ≤ {x1:.2f} or {outcomes[0]['name']} ≥ {x2:.2f}."
                 else:
                     y = p2 - p1
-                    message = f"Normal Distribution: The values of {outcomes[0]['name']} to observe probability between {(p1*100):.2f}% and {(p2*100):.2f}% are above {x1:.2f} and below {x2:.2f}."
+                    message = f"Normal Distribution: To observe {(p1*100):.2f}% ≤ probability ≤ {(p2*100):.2f}% the values are {outcomes[0]['name']} ≥ {x1:.2f} and ≤  {x2:.2f}."
             elif params['seekOption'] == 'probability':
                 p = float(params['seekProbability']) if float(params['seekProbability']) < 1 else float(params['seekProbability'])/100
                 x = norm.ppf(p, loc=mu, scale=sigma)
                 y = norm.pdf(x, loc=mu, scale=sigma)
                 if params['condition'] == '<=':
-                    message = f"Normal Distribution: The value of {outcomes[0]['name']} to observe less probability than or equal to {(p*100):.2f}% is {x:.2f}."
+                    message = f"Normal Distribution: The value of {outcomes[0]['name']} to observe probability ≤ {(p*100):.2f}% is {x:.2f}."
                 elif params['condition'] == '>=':
-                    message = f"Normal Distribution: The value of {outcomes[0]['name']} to observe greater probability than or equal to {(p*100):.2f}% is {x:.2f}."
+                    message = f"Normal Distribution: The value of {outcomes[0]['name']} to observe probability ≥ {(p*100):.2f}% is {x:.2f}."
             # New: Create plot if requested
             plot_data = None
             if params.get('producePlot'):

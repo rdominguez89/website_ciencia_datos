@@ -193,8 +193,13 @@ function setupCorrelationTestListener(data) {
         const column1 = document.getElementById('column1Select').value;
         const column2 = document.getElementById('column2Select').value;
         const method = document.getElementById('correlationMethodSelect').value;
-        const producePlot = document.getElementById('producePlotCheckbox').checked; // Default is unchecked
+        const producePlotCheckbox = document.getElementById('producePlotCheckbox');
+        const producePlot = producePlotCheckbox.checked; // Default is unchecked
+        
         sendDataForAnalysis(data, 'correlation', column1, column2, method, producePlot);
+        
+        // Reset the Produce Plot checkbox to unchecked after running test
+        producePlotCheckbox.checked = false;
     });
     addClearResultsButton('correlationInputs');
 }
