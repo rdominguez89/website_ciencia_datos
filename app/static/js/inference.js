@@ -64,7 +64,7 @@ function renderObjectInput(dataPreview, hypothesis) {
 
 function createObjectInputHTML() {
     return `
-        <h3>Enter Data as Object:</h3>
+        <h3>Enter Data as a dictionary or upload a CSV:</h3>
         <p>Example: <code>{"col_1": [1, 2, 3], "col_2": [4, 5, 6]}</code></p>
         <div style="display: flex;">
             <textarea id="objectDataInput" rows="6" cols="25" style="margin-right: 10px;"></textarea>
@@ -307,6 +307,7 @@ function createDistributionInputsHTML(distribution) {
                 <option value=">=">>=</option>
                 <option value="<="><=</option>
                 <option value="range">Range (a ≤ x ≤ b)</option>
+                <option value="out_of_range">Out of Range (x ≤ a and x ≥ b)</option>
             </select>
             <div id="rangeInputs" style="display:none;">
                 <label>Lower Bound (a):</label>
@@ -314,10 +315,26 @@ function createDistributionInputsHTML(distribution) {
                 <label>Upper Bound (b):</label>
                 <input type="number" id="normalUpperBound" value="1">
             </div>
-            <div id="seekValueContainer">
-                <label>Seek Value:</label>
-                <input type="number" id="normalSeekValue" value="1">
+            <div id="seekOptionsContainer">
+                <div id="seekValueContainer">
+                    <label>
+                        <input type="checkbox" id="normalSeekValueCheckbox" checked>
+                        Seek Value:
+                    </label>
+                    <input type="number" id="normalSeekValue" value="1">
+                </div>
+                <div id="seekProbabilityContainer">
+                    <label>
+                        <input type="checkbox" id="normalSeekProbabilityCheckbox">
+                        Seek Probability:
+                    </label>
+                    <input type="number" id="normalSeekProbability" value="50" min="0" max="100" step="1" disabled>
+                </div>
             </div>
+            <label>
+                <input type="checkbox" id="normalProducePlotCheckbox">
+                Produce Plot
+            </label>
         `;
     }
     
@@ -327,11 +344,69 @@ function createDistributionInputsHTML(distribution) {
 function setupNormalDistributionListeners() {
     const normalCondition = document.getElementById('normalCondition');
     const rangeInputs = document.getElementById('rangeInputs');
-    const seekContainer = document.getElementById('seekValueContainer');
+    const normalLowerBound = document.getElementById('normalLowerBound');
+    const normalUpperBound = document.getElementById('normalUpperBound');
+    const seekValueCheckbox = document.getElementById('normalSeekValueCheckbox');
+    const seekProbabilityCheckbox = document.getElementById('normalSeekProbabilityCheckbox');
+    const seekValueInput = document.getElementById('normalSeekValue');
+    const seekProbabilityInput = document.getElementById('normalSeekProbability');
     
+    // Set initial state for non-range conditions.
+    normalCondition.value = ">=";
+    rangeInputs.style.display = 'none';
+    seekValueInput.style.display = 'inline-block';
+    seekProbabilityInput.style.display = 'inline-block';
+
+    // Helper to update the default range values based on the selected seek option.
+    function updateRangeDefaults() {
+        if (normalCondition.value === 'range' || normalCondition.value === 'out_of_range') {
+            if (seekValueCheckbox.checked) {
+                normalLowerBound.value = 1;
+                normalUpperBound.value = 2;
+            } else if (seekProbabilityCheckbox.checked) {
+                normalLowerBound.value = 5;
+                normalUpperBound.value = 95;
+            }
+        }
+    }
+
     normalCondition.addEventListener('change', function() {
-        rangeInputs.style.display = this.value === 'range' ? 'block' : 'none';
-        seekContainer.style.display = this.value === 'range' ? 'none' : 'block';
+        if (this.value === 'range' || this.value === 'out_of_range') {
+            rangeInputs.style.display = 'block';
+            // Hide the seek input fields while keeping checkboxes visible
+            seekValueInput.style.display = 'none';
+            seekProbabilityInput.style.display = 'none';
+            // Do not update defaults here in order to preserve user-entered values.
+            // updateRangeDefaults();  <-- Removed this call.
+        } else {
+            rangeInputs.style.display = 'none';
+            // Show the seek input fields based on current checkbox states
+            seekValueInput.style.display = 'inline-block';
+            seekProbabilityInput.style.display = 'inline-block';
+        }
+    });
+    
+    // Setup mutual exclusion for Seek Value and Seek Probability checkboxes,
+    // and manage enabling/disabling of their corresponding input fields.
+    seekValueCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            seekValueInput.disabled = false;
+            seekProbabilityCheckbox.checked = false;
+            seekProbabilityInput.disabled = true;
+            updateRangeDefaults(); // update defaults when seek option changes
+        }
+    });
+    
+    seekProbabilityCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            seekProbabilityInput.disabled = false;
+            seekValueCheckbox.checked = false;
+            seekValueInput.disabled = true;
+            updateRangeDefaults(); // update defaults when seek option changes
+        } else {
+            seekValueCheckbox.checked = true;
+            seekValueInput.disabled = false;
+        }
     });
 }
 
@@ -581,7 +656,6 @@ async function handleProbabilityAnalysis(distType) {
     
     const params = collectDistributionParams(distType);
     if (params === null) return; // Validation failed
-    
     await sendDataForAnalysis(outcomes, distType, params);
 }
 
@@ -634,12 +708,21 @@ function collectDistributionParams(distType) {
         params.mean = document.getElementById('normalMean').value;
         params.stdDev = document.getElementById('normalStdDev').value;
         params.condition = document.getElementById('normalCondition').value;
-        if (params.condition === 'range') {
+        if (params.condition === 'range' || params.condition === 'out_of_range') {
             params.lowerBound = document.getElementById('normalLowerBound').value;
             params.upperBound = document.getElementById('normalUpperBound').value;
-        } else {
-            params.seekValue = document.getElementById('normalSeekValue').value;
         }
+        const seekValueCheckbox = document.getElementById('normalSeekValueCheckbox');
+        const seekProbabilityCheckbox = document.getElementById('normalSeekProbabilityCheckbox');
+        if (seekValueCheckbox.checked) {
+            params.seekOption = "value";
+            params.seekValue = document.getElementById('normalSeekValue').value;
+        } else if (seekProbabilityCheckbox.checked) {
+            params.seekOption = "probability";
+            params.seekProbability = document.getElementById('normalSeekProbability').value;
+        }
+        // New: pass the produce plot flag
+        params.producePlot = document.getElementById('normalProducePlotCheckbox').checked;
     }
     
     return params;

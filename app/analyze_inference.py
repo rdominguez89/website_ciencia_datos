@@ -229,23 +229,92 @@ def analyze_distribution(outcomes, distribution, params):
         elif distribution == 'normal':
             mu = float(params['mean'])
             sigma = float(params['stdDev'])
-            if params['condition'] == 'range':
+            if params['seekOption'] == 'value' and (params['condition'] == 'range' or  params['condition'] == 'out_of_range'):
                 x1 = float(params['lowerBound'])
                 x2 = float(params['upperBound'])
                 y1 = norm.cdf(x1, loc=mu, scale=sigma)
                 y2 = norm.cdf(x2, loc=mu, scale=sigma)
-                if x1 < 0: y1 = 1 - y1  # Adjust for left tail
-                if x2 < 0: y2 = 1 - y2  # Adjust for left tail
-                y = abs(y2 - y1)
-                message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} between {x1} and {x2} is {(100*y):.2f}%."
-            else:
+                if params['condition'] == 'out_of_range':
+                    y = y1 + (1-y2)
+                    message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} outside the range {x1} to {x2} is {(100*y):.2f}%."
+                else:
+                    y = abs(y2 - y1)
+                    message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} between {x1} and {x2} is {(100*y):.2f}%."
+            elif params['seekOption'] == 'value':
                 x = float(params['seekValue'])
                 y = norm.cdf(x, loc=mu, scale=sigma)
                 if params['condition'] == '<=':
                     message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} less than or equal to {params['seekValue']} is {(100*y):.2f}%."
                 elif params['condition'] == '>=':
                     message = f"Normal Distribution: The probability of observing {outcomes[0]['name']} greater than or equal to {params['seekValue']} is {(100*(1-y)):.2f}%."
-            return {'success': True, 'message': message, 'plot': None}
+            elif params['seekOption'] == 'probability' and (params['condition'] == 'range' or  params['condition'] == 'out_of_range'):
+                p1 = float(params['lowerBound']) if float(params['lowerBound']) < 1 else float(params['lowerBound'])/100
+                p2 = float(params['upperBound']) if float(params['upperBound']) < 1 else float(params['upperBound'])/100
+                x1 = norm.ppf(p1, loc=mu, scale=sigma)
+                x2 = norm.ppf(p2, loc=mu, scale=sigma)
+                if params['condition'] == 'out_of_range':
+                    message = f"Normal Distribution: The values of {outcomes[0]['name']} to observe probability outside the range {(p1*100):.2f}% and {(p2*100):.2f}% are below {x1:.2f} or above {x2:.2f}."
+                else:
+                    y = p2 - p1
+                    message = f"Normal Distribution: The values of {outcomes[0]['name']} to observe probability between {(p1*100):.2f}% and {(p2*100):.2f}% are above {x1:.2f} and below {x2:.2f}."
+            elif params['seekOption'] == 'probability':
+                p = float(params['seekProbability']) if float(params['seekProbability']) < 1 else float(params['seekProbability'])/100
+                x = norm.ppf(p, loc=mu, scale=sigma)
+                y = norm.pdf(x, loc=mu, scale=sigma)
+                if params['condition'] == '<=':
+                    message = f"Normal Distribution: The value of {outcomes[0]['name']} to observe less probability than or equal to {(p*100):.2f}% is {x:.2f}."
+                elif params['condition'] == '>=':
+                    message = f"Normal Distribution: The value of {outcomes[0]['name']} to observe greater probability than or equal to {(p*100):.2f}% is {x:.2f}."
+            # New: Create plot if requested
+            plot_data = None
+            if params.get('producePlot'):
+                plt.figure(figsize=(6, 6))
+                xs = np.linspace(mu - 4*sigma, mu + 4*sigma, 200)
+                y_curve = norm.pdf(xs, loc=mu, scale=sigma)
+                plt.plot(xs, y_curve, label='Normal PDF')
+                if params['condition'] == 'out_of_range' or params['condition'] == 'range':
+                    #find y where x crosses the curve
+                    yl = norm.pdf(x1, loc=mu, scale=sigma)
+                    yr = norm.pdf(x2, loc=mu, scale=sigma)
+                    plt.plot([x1, x1], [0, yl], 'g-')
+                    plt.plot([x2, x2], [0, yr], 'g-')
+                if params['condition'] == '>=':
+                    if params['seekOption'] == 'probability': 
+                        xl = norm.ppf(p, loc=mu, scale=sigma)
+                    else:
+                        xl = x
+                    yl = norm.pdf(xl, loc=mu, scale=sigma)
+                    plt.plot([xl, xl], [0, yl], 'g-')
+                if params['condition'] == '<=':
+                    if params['seekOption'] == 'probability':
+                        xr = norm.ppf(p, loc=mu, scale=sigma)
+                    else:
+                        xr = x
+                    yr = norm.pdf(xr, loc=mu, scale=sigma)
+                    plt.plot([xr, xr], [0, yr], 'g-')
+                if params['condition'] == 'out_of_range':
+                    plt.fill_between(xs, y_curve, where=(xs <= x1) | (xs >= x2), alpha=0.2)
+                elif params['condition'] == 'range':
+                    plt.fill_between(xs, y_curve, where=(xs >= x1) & (xs <= x2), alpha=0.2)
+                elif params['condition'] == '>=':
+                    plt.fill_between(xs, y_curve, where=(xs >= xl), alpha=0.2)
+                elif params['condition'] == '<=':
+                    plt.fill_between(xs, y_curve, where=(xs <= xr), alpha=0.2)
+                plt.title('Normal Distribution')
+                plt.xlabel(outcomes[0]['name'])
+                plt.ylabel('Probability Density')
+
+                # Add secondary x-axis for Z-scores
+                ax2 = plt.gca().secondary_xaxis('top', functions=(lambda x: (x - mu)/sigma, lambda z: mu + z * sigma))  # Convert back to original
+                ax2.set_xlabel('Z-Score')
+
+
+                plt.legend()
+                buffer = io.BytesIO()
+                plt.savefig(buffer, format='png')
+                plot_data = base64.b64encode(buffer.getvalue()).decode('utf-8')
+                plt.close()
+            return {'success': True, 'message': message, 'plot': plot_data}
         else:
             raise ValueError("Invalid distribution type")
     except Exception as e:
