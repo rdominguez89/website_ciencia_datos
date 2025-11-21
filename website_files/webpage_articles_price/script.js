@@ -5,7 +5,7 @@ let productsPerPage = 6;
 let currentSort = 'name-asc';
 
 // Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadProducts();
 });
 
@@ -26,21 +26,21 @@ async function loadProducts() {
 function parseCSV(csvText) {
     const lines = csvText.trim().split('\n');
     const headers = lines[0].split(',');
-    
+
     return lines.slice(1).map(line => {
         const values = line.split(',');
         const product = {};
-        
+
         headers.forEach((header, index) => {
             const value = values[index]?.trim();
-            switch(header) {
+            switch (header) {
                 case 'id': product[header] = parseInt(value); break;
                 case 'price': product[header] = parseFloat(value); break;
                 case 'images': product[header] = value.split(',').map(img => img.trim()); break;
                 default: product[header] = value;
             }
         });
-        
+
         return product;
     }).filter(product => product.id);
 }
@@ -66,7 +66,7 @@ function renderHomePage() {
 function renderHeroSlider() {
     const slider = document.getElementById('hero-slider');
     const featuredProducts = products.slice(0, 3);
-    
+
     slider.innerHTML = featuredProducts.map((product, index) => `
         <a href="product.html?id=${product.id}" class="slide ${index === 0 ? 'active' : ''}">
             <div class="slide-content">
@@ -87,7 +87,7 @@ function renderProducts() {
     const sortedProducts = getSortedProducts();
     const startIndex = (currentPage - 1) * productsPerPage;
     const productsToShow = sortedProducts.slice(startIndex, startIndex + productsPerPage);
-    
+
     grid.innerHTML = productsToShow.map(product => `
         <a href="product.html?id=${product.id}" class="product-card">
             <div class="product-image">${getInitials(product.name)}</div>
@@ -102,7 +102,7 @@ function renderProducts() {
 function renderPagination() {
     const pagination = document.getElementById('pagination');
     const totalPages = Math.ceil(products.length / productsPerPage);
-    
+
     pagination.innerHTML = `
         <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
             Previous
@@ -119,14 +119,14 @@ function renderProductPage() {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = parseInt(urlParams.get('id'));
     const product = products.find(p => p.id === productId);
-    
+
     const detail = document.getElementById('product-detail');
-    
+
     if (!product) {
         detail.innerHTML = '<div class="loading"><h2>Product not found</h2></div>';
         return;
     }
-    
+
     detail.innerHTML = `
         <div class="product-gallery">
             <div class="thumbnail-container">
@@ -152,7 +152,7 @@ function renderProductPage() {
 // Helper functions
 function getSortedProducts() {
     const [field, order] = currentSort.split('-');
-    
+
     return [...products].sort((a, b) => {
         let aVal = a[field], bVal = b[field];
         if (field === 'name') {
@@ -177,7 +177,7 @@ function updateProductsCount() {
 function navigateSlider(direction) {
     const slides = document.querySelectorAll('.slide');
     let currentIndex = Array.from(slides).findIndex(slide => slide.classList.contains('active'));
-    
+
     slides[currentIndex].classList.remove('active');
     currentIndex = (currentIndex + direction + slides.length) % slides.length;
     slides[currentIndex].classList.add('active');
@@ -206,7 +206,7 @@ function changePage(newPage) {
         renderProducts();
         renderPagination();
         updateProductsCount();
-        
+
         // Scroll to products section
         document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
     }
@@ -215,7 +215,7 @@ function changePage(newPage) {
 function changeImage(index) {
     const thumbnails = document.querySelectorAll('.thumbnail');
     const mainImage = document.querySelector('.main-image');
-    
+
     thumbnails.forEach(thumb => thumb.classList.remove('active'));
     thumbnails[index].classList.add('active');
     mainImage.textContent = thumbnails[index].textContent;
