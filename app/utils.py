@@ -1,4 +1,3 @@
-from tkinter.tix import MAX
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
@@ -11,6 +10,7 @@ from .analyze_supervised import add_watermark_fig, add_watermark_fig_ax
 
 MAX_ROWS = 4000
 MAX_COLUMNS = 20
+MAX = 1000000
 
 matplotlib.use('Agg')
 
