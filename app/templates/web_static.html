@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="{{ url_for('main.index') }}" class="back-button">Home</a>
+<a href="{{ url_for('main.web_static') }}" class="back-button">Web Static</a>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_web_development.css') }}">
+<h1>Web Development Samples</h1>
+<div class="links">
+    <!-- First row - Articles website 1 -->
+    <a href="{{ url_for('main.website_articles_price') }}">Articles website 1</a>
+
+    <!-- Second row - Supervised and No Supervised -->
+    <!-- <div class="row">
+        <a href="{{ url_for('main.supervised') }}">Supervised Analysis</a>
+        <a href="{{ url_for('main.nosupervised') }}" class="disabled">No supervised Analysis</a>
+    </div> -->
+
+    <!-- Third row - Statistical Inference -->
+    <!-- <a href="{{ url_for('main.inference') }}">Statistical Inference</a> -->
+</div>
+{% endblock %}

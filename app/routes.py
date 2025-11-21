@@ -14,6 +14,10 @@ from .analyze_inference import perform_one_sample_ttest, perform_correlation, an
 from flask_cors import CORS
 from traceback import format_exc
 
+
+MAX_ROWS = 4000
+MAX_COLUMNS = 20
+
 bp = Blueprint('main', __name__)
 
 # Initialize security extensions
@@ -83,6 +87,35 @@ def validate_filename(filename):
 def index():
     """Render the main index page."""
     return render_template('index.html')
+
+@bp.route('/datascience')
+def data_science_front():
+    """Render the data datascience page."""
+    return render_template('data_science_front.html')
+
+@bp.route('/web_development')
+def web_development():
+    """Render the web development page."""
+    return render_template('web_development.html')
+
+@bp.route('/web_static')
+def web_static():
+    """Render the web static page."""
+    return render_template('web_static.html')
+
+@bp.route('/website_files/webpage_articles_price/')
+@bp.route('/website_files/webpage_articles_price/index.html')
+def website_articles_price():
+    """Serve the website articles price page."""
+    return send_file(os.path.join(current_app.root_path, '..', 'website_files', 'webpage_articles_price', 'index.html'))
+
+@bp.route('/website_files/webpage_articles_price/<path:filename>')
+def website_articles_price_static(filename):
+    """Serve static files for the website articles price page."""
+    file_path = os.path.join(current_app.root_path, '..', 'website_files', 'webpage_articles_price', filename)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return send_file(file_path)
+    abort(404)
 
 @bp.route('/cleaning')
 def cleaning():
@@ -232,7 +265,7 @@ def analyze_inference():
         data = request.json
 
         # New: Check data size limits (max rows and max columns).
-        MAX_ROWS = 1000
+        MAX_ROWS = 2000
         MAX_COLUMNS = 13
         data_field = data.get('data')
         if data_field is None:

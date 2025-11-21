@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Premium Electronics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">TechStore</a>
+            <ul class="nav-links">
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Slider (will be populated by JavaScript) -->
+    <section class="hero-slider" id="hero-slider">
+        <!-- Slides will be added here by JavaScript -->
+        <button class="slider-nav prev-slide" onclick="navigateSlider(-1)">‹</button>
+        <button class="slider-nav next-slide" onclick="navigateSlider(1)">›</button>
+    </section>
+
+    <!-- Products Section -->
+    <main class="container">
+        <section class="products-section" id="products">
+            <h2 class="section-title">Our Products</h2>
+            
+            <!-- Sorting Controls -->
+            <div class="sorting-controls">
+                <div class="sort-options">
+                    <label for="sort">Sort by:</label>
+                    <select id="sort" onchange="sortProducts(this.value)">
+                        <option value="name-asc">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                        <option value="price-asc">Price (Low to High)</option>
+                        <option value="price-desc">Price (High to Low)</option>
+                    </select>
+                </div>
+                
+                <div class="products-count">
+                    <span id="products-count">Loading...</span>
+                </div>
+                
+                <div class="products-per-page">
+                    <label for="per-page">Show:</label>
+                    <select id="per-page" onchange="changeProductsPerPage(this.value)">
+                        <option value="6">6</option>
+                        <option value="12">12</option>
+                        <option value="24">24</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Products Grid (will be populated by JavaScript) -->
+            <div class="products-grid" id="products-grid">
+                <div class="loading">Loading products...</div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be added here by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 TechStore. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

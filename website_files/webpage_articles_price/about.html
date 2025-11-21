@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - TechStore</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .about-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .about-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .about-section p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .team-member img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #ecf0f1;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            font-size: 2rem;
+        }
+
+        .team-member h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-member .role {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .value-card {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-top: 4px solid #3498db;
+        }
+
+        .value-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .about-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .about-content {
+                padding: 0 1rem;
+            }
+            
+            .about-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">TechStore</a>
+            <ul class="nav-links">
+                <!-- <li><a href="about.html">About</a></li> -->
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- About Hero -->
+    <section class="about-hero">
+        <div class="container">
+            <h1>About TechStore</h1>
+            <p style="font-size: 1.2rem;">Your trusted partner in premium electronics since 2015</p>
+        </div>
+    </section>
+
+    <!-- About Content -->
+    <main class="container">
+        <div class="about-content">
+            <!-- Our Story -->
+            <section class="about-section">
+                <h2>Our Story</h2>
+                <p>Founded in 2015, TechStore began as a small startup with a big vision: to make cutting-edge technology accessible to everyone. What started as a humble online store has grown into a trusted destination for electronics enthusiasts and professionals alike.</p>
+                <p>We believe that technology should enhance your life, not complicate it. That's why we carefully curate every product in our collection, ensuring they meet our high standards for quality, performance, and user experience.</p>
+            </section>
+
+            <!-- Our Mission -->
+            <section class="about-section">
+                <h2>Our Mission</h2>
+                <p>To bridge the gap between innovative technology and everyday users by providing high-quality electronics with exceptional customer service and expert guidance.</p>
+                <p>We're committed to helping you find the perfect tech solutions that fit your lifestyle, whether you're a creative professional, a dedicated gamer, or someone looking to upgrade your home office.</p>
+            </section>
+
+            <!-- Our Values -->
+            <section class="about-section">
+                <h2>Our Values</h2>
+                <div class="values-grid">
+                    <div class="value-card">
+                        <h3>Quality First</h3>
+                        <p>We never compromise on quality. Every product is thoroughly tested and vetted before reaching you.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Customer Focus</h3>
+                        <p>Your satisfaction is our priority. We're here to help you make informed decisions.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Innovation</h3>
+                        <p>We stay ahead of the curve to bring you the latest and most innovative technology.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Sustainability</h3>
+                        <p>We're committed to eco-friendly practices and sustainable technology solutions.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Our Team -->
+            <section class="about-section">
+                <h2>Meet Our Team</h2>
+                <p>Behind TechStore is a passionate team of tech enthusiasts, customer service experts, and logistics professionals dedicated to making your experience exceptional.</p>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div>👨‍💼</div>
+                        <h3>John Smith</h3>
+                        <div class="role">CEO & Founder</div>
+                        <p>Tech enthusiast with 15+ years in electronics retail</p>
+                    </div>
+                    <div class="team-member">
+                        <div>👩‍💻</div>
+                        <h3>Sarah Johnson</h3>
+                        <div class="role">Product Manager</div>
+                        <p>Ensures every product meets our quality standards</p>
+                    </div>
+                    <div class="team-member">
+                        <div>👨‍🔧</div>
+                        <h3>Mike Chen</h3>
+                        <div class="role">Tech Support Lead</div>
+                        <p>Your go-to expert for technical assistance</p>
+                    </div>
+                    <div class="team-member">
+                        <div>👩‍💼</div>
+                        <h3>Emily Davis</h3>
+                        <div class="role">Customer Experience</div>
+                        <p>Makes sure every customer feels valued</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 TechStore. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
