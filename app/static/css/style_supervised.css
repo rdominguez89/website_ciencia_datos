@@ -1,8 +1,10 @@
 /* Base Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #2d3748;  /* Dark slate gray */
-    color: #e2e8f0;  /* Light gray text for contrast */
+    background-color: rgb(11, 17, 32);
+    /* Dark slate gray */
+    color: #e2e8f0;
+    /* Light gray text for contrast */
     margin: 0;
     padding: 0;
     line-height: 1.6;
@@ -12,7 +14,8 @@ body {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
-    background-color: #1a202c;  /* Slightly darker container background */
+    background-color: #1a202c;
+    /* Slightly darker container background */
     border-radius: 8px;
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -26,25 +29,27 @@ body {
 
 .back-button {
     display: inline-block;
-    background-color: #48bb78;  /* Green */
+    background-color: #48bb78;
+    /* Green */
     color: white;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
     margin-bottom: 1rem;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     font-weight: 500;
 }
 
 .back-button:hover {
     background-color: #38a169;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 h1 {
-    color: #ffffff;  /* White for better contrast */
+    color: #ffffff;
+    /* White for better contrast */
     margin: 0 0 2rem 0;
     font-weight: 300;
     letter-spacing: 1px;
@@ -63,8 +68,9 @@ h1 {
 }
 
 .custom-file-upload {
-    border: 2px solid #4299e1;  /* Blue */
-    color: #4299e1;
+    border: 2px solid #2563eb;
+    /* Blue */
+    color: #2563eb;
     padding: 8px 16px;
     cursor: pointer;
     border-radius: 5px;
@@ -74,12 +80,13 @@ h1 {
 }
 
 .custom-file-upload:hover {
-    background-color: #4299e1;
+    background-color: #2563eb;
     color: white;
 }
 
 #uploadBtn {
-    background-color: #4299e1;  /* Blue */
+    background-color: #2563eb;
+    /* Blue */
     border: none;
     color: white;
     padding: 10px 20px;
@@ -87,14 +94,14 @@ h1 {
     cursor: pointer;
     border-radius: 5px;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     font-weight: 500;
 }
 
 #uploadBtn:hover {
-    background-color: #3182ce;
+    background-color: #1e3a8a;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 #uploadBtn:disabled {
@@ -155,7 +162,7 @@ h1 {
     background: #1a202c;
     padding: 15px;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     text-align: center;
     border: 1px solid #4a5568;
 }
@@ -164,7 +171,8 @@ h1 {
     font-size: 24px;
     font-weight: bold;
     display: block;
-    color: #68d391;  /* Green */
+    color: #68d391;
+    /* Green */
 }
 
 .stat-label {
@@ -181,11 +189,14 @@ table {
     white-space: nowrap;
 }
 
-table, th, td {
+table,
+th,
+td {
     border: 1px solid #4a5568;
 }
 
-th, td {
+th,
+td {
     padding: 8px 12px;
     text-align: left;
     color: #e2e8f0;
@@ -210,7 +221,8 @@ tr:nth-child(even) {
 }
 
 .column-option {
-    flex: 1 0 calc(33.333% - 10px); /* 3 columns per row */
+    flex: 1 0 calc(33.333% - 10px);
+    /* 3 columns per row */
     min-width: 200px;
     padding: 8px;
     background: #2d3748;
@@ -255,14 +267,14 @@ tr:nth-child(even) {
     background: #2d3748;
     border-radius: 8px;
     padding: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s;
     border: 1px solid #4a5568;
 }
 
 .visualization-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .visualization-card img {
@@ -275,7 +287,8 @@ tr:nth-child(even) {
 
 /* Action Buttons */
 .action-button {
-    background-color: #48bb78;  /* Green */
+    background-color: #48bb78;
+    /* Green */
     color: white;
     border: none;
     padding: 8px 16px;
@@ -315,18 +328,24 @@ tr:nth-child(even) {
 
 .plot-overlay-content {
     position: relative;
-    max-width: 90vw;        /* Viewport width units */
-    max-height: 90vh;       /* Viewport height units */
+    max-width: 90vw;
+    /* Viewport width units */
+    max-height: 90vh;
+    /* Viewport height units */
     width: auto;
     height: auto;
     background: #1a202c;
     padding: 20px;
     border-radius: 8px;
     border: 1px solid #4a5568;
-    display: flex;          /* Added */
-    justify-content: center; /* Added */
-    align-items: center;    /* Added */
-    overflow: hidden;       /* Added */
+    display: flex;
+    /* Added */
+    justify-content: center;
+    /* Added */
+    align-items: center;
+    /* Added */
+    overflow: hidden;
+    /* Added */
 }
 
 .plot-overlay-content img {
@@ -350,9 +369,10 @@ tr:nth-child(even) {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border: 1px solid #4a5568;
-    z-index: 1001;          /* Added to ensure it stays above image */
+    z-index: 1001;
+    /* Added to ensure it stays above image */
 }
 
 .close-overlay:hover {
@@ -404,7 +424,8 @@ tr:nth-child(even) {
 
 .cleaning-link a {
     display: inline-block;
-    background-color: #48bb78;  /* Green */
+    background-color: #48bb78;
+    /* Green */
     color: white;
     padding: 8px 16px;
     text-decoration: none;
@@ -412,33 +433,38 @@ tr:nth-child(even) {
     font-size: 14px;
     font-weight: 500;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .cleaning-link a:hover {
     background-color: #38a169;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .clear-button {
-    background-color: #f56565;  /* Red */
+    background-color: #f56565;
+    /* Red */
 }
 
 .clear-button:hover {
-    background-color: #e53e3e;  /* Darker red */
+    background-color: #e53e3e;
+    /* Darker red */
 }
 
 /* Additional contrast adjustments */
 a {
-    color: #63b3ed;  /* Light blue for links */
+    color: #63b3ed;
+    /* Light blue for links */
 }
 
 a:hover {
     color: #4299e1;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
     background-color: #2d3748;
     border: 1px solid #4a5568;
     color: #e2e8f0;
@@ -446,7 +472,9 @@ input, select, textarea {
     border-radius: 4px;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
     outline: none;
     border-color: #63b3ed;
     box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.3);
@@ -535,9 +563,12 @@ input:focus, select:focus, textarea:focus {
 .split-adjust[data-direction="down"]::after {
     content: "↓";
 }
+
 .wider-select {
-    width: 200px; /* Adjust the width as needed */
+    width: 200px;
+    /* Adjust the width as needed */
 }
+
 /* Model selection container */
 .model-selection-container {
     border: 1px solid #4a5568;
@@ -579,9 +610,11 @@ input:focus, select:focus, textarea:focus {
 .model-description {
     display: block;
     font-size: 0.85em;
-    color: #e3dbdbbf; /* Slightly lighter gray */
+    color: #e3dbdbbf;
+    /* Slightly lighter gray */
     line-height: 1.4;
-    margin-left: 24px; /* Align with text */
+    margin-left: 24px;
+    /* Align with text */
 }
 
 /* Parameters section */
@@ -606,13 +639,14 @@ input:focus, select:focus, textarea:focus {
 .param-control {
     display: flex;
     cursor: pointer;
-    align-items:left;
+    align-items: left;
 }
 
 .param-control label {
     min-width: 100px;
     font-size: 0.9em;
-    text-align: left; /* Align label text to the right */
+    text-align: left;
+    /* Align label text to the right */
 
 }
 
@@ -622,7 +656,8 @@ input:focus, select:focus, textarea:focus {
     border: 1px solid #ddd;
     border-radius: 4px;
     width: auto;
-    flex-grow: 1; /* Allow input/select to take remaining space */
+    flex-grow: 1;
+    /* Allow input/select to take remaining space */
 }
 
 .cv-options {
@@ -655,7 +690,8 @@ input:focus, select:focus, textarea:focus {
 
 .thumbnail-container {
     width: 100%;
-    height: 500px; /* Fixed height for thumbnails */
+    height: 500px;
+    /* Fixed height for thumbnails */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -685,39 +721,56 @@ input:focus, select:focus, textarea:focus {
 }
 
 @keyframes loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 .model-info {
-    position: absolute; /* Use absolute positioning */
-    bottom: 0;          /* Align to the bottom */
-    left: 0;            /* Align to the left */
-    margin-left: 5px;   /* Keep a small margin */
+    position: absolute;
+    /* Use absolute positioning */
+    bottom: 0;
+    /* Align to the bottom */
+    left: 0;
+    /* Align to the left */
+    margin-left: 5px;
+    /* Keep a small margin */
     cursor: pointer;
-    color: #63b3ed;     /* Light blue color */
-    padding: 5px 5px;       /* Add some padding around the icon */
-    border-radius: 4px; /* Optional: round the corners */
-    z-index: 2; /* Ensure it's above other elements */
+    color: #63b3ed;
+    /* Light blue color */
+    padding: 5px 5px;
+    /* Add some padding around the icon */
+    border-radius: 4px;
+    /* Optional: round the corners */
+    z-index: 2;
+    /* Ensure it's above other elements */
 }
 
 .model-info i {
     font-size: 1em;
-    display: block;     /* Make the icon a block-level element */
+    display: block;
+    /* Make the icon a block-level element */
 }
 
 .model-option-box {
     border: 1px solid #eee;
     border-radius: 6px;
     padding: 12px;
-    position: relative; /* Add relative positioning to the container */
+    position: relative;
+    /* Add relative positioning to the container */
 }
 
 /* Tooltip styles */
 .model-info:hover::before {
-    content: attr(title); /* Use the title attribute as the tooltip text */
+    content: attr(title);
+    /* Use the title attribute as the tooltip text */
     position: absolute;
-    bottom: 100%; /* Position above the icon */
+    bottom: 100%;
+    /* Position above the icon */
     left: 500%;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.8);
@@ -725,10 +778,14 @@ input:focus, select:focus, textarea:focus {
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 0.8em;
-    white-space: normal; /* Allow text to wrap */
-    word-wrap: break-word; /* Break long words */
-    min-width: 200px; /* Minimum width for the tooltip */
-    max-width: 300px; /* Limit the width of the tooltip */
+    white-space: normal;
+    /* Allow text to wrap */
+    word-wrap: break-word;
+    /* Break long words */
+    min-width: 200px;
+    /* Minimum width for the tooltip */
+    max-width: 300px;
+    /* Limit the width of the tooltip */
     z-index: 1;
 }
 
@@ -757,6 +814,7 @@ input:focus, select:focus, textarea:focus {
     .container {
         padding: 1rem;
     }
+
     .upload-section {
         flex-direction: column;
     }
@@ -768,9 +826,12 @@ input:focus, select:focus, textarea:focus {
         white-space: nowrap;
     }
 
-    th, td {
-        padding: 6px 8px; /* Slightly reduced padding */
-        font-size: 0.85em; /* Slightly smaller font */
+    th,
+    td {
+        padding: 6px 8px;
+        /* Slightly reduced padding */
+        font-size: 0.85em;
+        /* Slightly smaller font */
     }
 
     /* Optional: Add horizontal scroll indicator */
@@ -790,6 +851,7 @@ input:focus, select:focus, textarea:focus {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     /* Data Analysis Setup adjustments: ensure borders and elements fit the width */
     .analysis-section,
     .analysis-subsection {
@@ -798,22 +860,30 @@ input:focus, select:focus, textarea:focus {
     }
 
     .wider-select {
-        width: 80%; /* Adjust the width as needed */
+        width: 80%;
+        /* Adjust the width as needed */
     }
+
     .visualization-grid {
         grid-template-columns: 1fr;
     }
 
     .model-description {
-        max-width: 90%; /* Adjust as needed */
-        padding-right: 10px; /* Prevent text from touching the edge */
-        box-sizing: border-box; /* Include padding in element's total width */
+        max-width: 90%;
+        /* Adjust as needed */
+        padding-right: 10px;
+        /* Prevent text from touching the edge */
+        box-sizing: border-box;
+        /* Include padding in element's total width */
     }
 
     .model-option-box {
-        max-width: 65%; /* Include padding and border in the element's total width */
-        padding: 10px; /* Add some padding */
-        margin: 5px; /* Add some margin */
+        max-width: 65%;
+        /* Include padding and border in the element's total width */
+        padding: 10px;
+        /* Add some padding */
+        margin: 5px;
+        /* Add some margin */
     }
 
     .cv-param {
@@ -832,4 +902,3 @@ input:focus, select:focus, textarea:focus {
         -webkit-overflow-scrolling: touch;
     }
 }
-

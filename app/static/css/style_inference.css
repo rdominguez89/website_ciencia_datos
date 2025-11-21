@@ -1,8 +1,10 @@
 /* Base Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #2d3748;  /* Dark slate gray */
-    color: #e2e8f0;  /* Light gray text for contrast */
+    background-color: rgb(11, 17, 32);
+    /* Dark slate gray */
+    color: #e2e8f0;
+    /* Light gray text for contrast */
     margin: 0;
     padding: 0;
     line-height: 1.6;
@@ -12,7 +14,8 @@ body {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
-    background-color: #1a202c;  /* Slightly darker container background */
+    background-color: #1a202c;
+    /* Slightly darker container background */
     border-radius: 8px;
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -25,22 +28,27 @@ body {
 }
 
 .back-button {
-    display: block; /* Changed to block */
-    width: fit-content; /* Adjust width to content */
-    margin: 0 auto; /* Center the button */
-    background-color: #48bb78;  /* Green */
+    display: block;
+    /* Changed to block */
+    width: fit-content;
+    /* Adjust width to content */
+    margin: 0 auto;
+    /* Center the button */
+    background-color: #48bb78;
+    /* Green */
     color: white;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
     margin-bottom: 1rem;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     font-weight: 500;
 }
 
 h1 {
-    text-align: center; /* Center the title */
+    text-align: center;
+    /* Center the title */
     color: #ffffff;
     margin: 0 0 2rem 0;
     font-weight: 300;
@@ -57,31 +65,38 @@ h1 {
     display: flex;
     gap: 1rem;
     align-items: center;
-    width: 75%; /* Adjust width to take up approximately half the container */
+    width: 75%;
+    /* Adjust width to take up approximately half the container */
 }
 
 .custom-file-upload {
-    border: 2px solid #4299e1;  /* Blue */
-    color: #4299e1;
+    border: 2px solid #2563eb;
+    /* Blue */
+    color: #2563eb;
     padding: 8px 16px;
     cursor: pointer;
     border-radius: 5px;
     font-weight: 500;
     transition: all 0.3s ease;
     background-color: transparent;
-    display: inline-block; /* Ensure proper alignment */
-    text-align: center; /* Center the text */
-    width: 100%; /* Occupy full width of the upload section */
-    box-sizing: border-box; /* Include padding and border in the element's total width */
+    display: inline-block;
+    /* Ensure proper alignment */
+    text-align: center;
+    /* Center the text */
+    width: 100%;
+    /* Occupy full width of the upload section */
+    box-sizing: border-box;
+    /* Include padding and border in the element's total width */
 }
 
 .custom-file-upload:hover {
-    background-color: #4299e1;
+    background-color: #2563eb;
     color: white;
 }
 
 #uploadBtn {
-    background-color: #4299e1;  /* Blue */
+    background-color: #2563eb;
+    /* Blue */
     border: none;
     color: white;
     padding: 10px 20px;
@@ -89,18 +104,22 @@ h1 {
     cursor: pointer;
     border-radius: 5px;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     font-weight: 500;
-    display: inline-block; /* Ensure proper alignment */
-    text-align: center; /* Center the text */
-    width: 100%; /* Occupy full width of the upload section */
-    box-sizing: border-box; /* Include padding and border in the element's total width */
+    display: inline-block;
+    /* Ensure proper alignment */
+    text-align: center;
+    /* Center the text */
+    width: 100%;
+    /* Occupy full width of the upload section */
+    box-sizing: border-box;
+    /* Include padding and border in the element's total width */
 }
 
 #uploadBtn:hover {
-    background-color: #3182ce;
+    background-color: #1e3a8a;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 #uploadBtn:disabled {
@@ -118,10 +137,14 @@ h1 {
     border-radius: 8px;
     margin-top: 20px;
     border: 1px solid #4a5568;
-    max-width: 694px; /* Added to match container width */
-    margin-left: auto; /* Center the container */
-    margin-right: auto; /* Center the container */
-    margin-bottom: 6rem; /* Added to match container bottom margin */
+    max-width: 694px;
+    /* Added to match container width */
+    margin-left: auto;
+    /* Center the container */
+    margin-right: auto;
+    /* Center the container */
+    margin-bottom: 6rem;
+    /* Added to match container bottom margin */
 }
 
 #hypothesisSection {
@@ -139,8 +162,11 @@ h1 {
     font-family: monospace;
 }
 
-#analyzeObjectBtn, #runCorrelationTestBtn, #runH0TestBtn, #analyzeProbabilityBtn {
-    background-color: #4299e1;
+#analyzeObjectBtn,
+#runCorrelationTestBtn,
+#runH0TestBtn,
+#analyzeProbabilityBtn {
+    background-color: #2563eb;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -150,11 +176,16 @@ h1 {
     transition: background-color 0.3s;
 }
 
-#analyzeObjectBtn:hover, #runCorrelationTestBtn:hover, #runH0TestBtn:hover, #analyzeProbabilityBtn:hover {
-    background-color: #3182ce;
+#analyzeObjectBtn:hover,
+#runCorrelationTestBtn:hover,
+#runH0TestBtn:hover,
+#analyzeProbabilityBtn:hover {
+    background-color: #1e3a8a;
 }
 
-#correlationInputs, #h0Inputs, #distributionInputs {
+#correlationInputs,
+#h0Inputs,
+#distributionInputs {
     background: #1a202c;
     padding: 15px;
     border-radius: 8px;
@@ -171,21 +202,26 @@ h1 {
 }
 
 /* Style for outcome buttons */
-#probabilitySpaceDiv > button {
-    margin-right: 10px; /* Add some spacing between buttons */
+#probabilitySpaceDiv>button {
+    margin-right: 10px;
+    /* Add some spacing between buttons */
 }
 
 /* Style for the button container */
 .button-container {
     display: flex;
-    justify-content: flex-end; /* Right align the buttons */
-    align-items: center; /* Vertically align items */
-    margin-top: 10px; /* Add some spacing above the buttons */
+    justify-content: flex-end;
+    /* Right align the buttons */
+    align-items: center;
+    /* Vertically align items */
+    margin-top: 10px;
+    /* Add some spacing above the buttons */
 }
 
 /* Add Outcome and Remove Outcome buttons */
-#addOutcomeBtn, #removeOutcomeBtn {
-    background-color: #4299e1;
+#addOutcomeBtn,
+#removeOutcomeBtn {
+    background-color: #2563eb;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -195,8 +231,9 @@ h1 {
     transition: background-color 0.3s;
 }
 
-#addOutcomeBtn:hover, #removeOutcomeBtn:hover {
-    background-color: #3182ce;
+#addOutcomeBtn:hover,
+#removeOutcomeBtn:hover {
+    background-color: #1e3a8a;
 }
 
 #removeOutcomeBtn:disabled {
@@ -239,7 +276,8 @@ h1 {
 }
 
 .column-option {
-    flex: 1 0 calc(33.333% - 10px); /* 3 columns per row */
+    flex: 1 0 calc(33.333% - 10px);
+    /* 3 columns per row */
     min-width: 200px;
     padding: 8px;
     background: #2d3748;
@@ -284,14 +322,14 @@ h1 {
     background: #2d3748;
     border-radius: 8px;
     padding: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s;
     border: 1px solid #4a5568;
 }
 
 .visualization-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .visualization-card img {
@@ -304,7 +342,8 @@ h1 {
 
 /* Action Buttons */
 .action-button {
-    background-color: #48bb78;  /* Green */
+    background-color: #48bb78;
+    /* Green */
     color: white;
     border: none;
     padding: 8px 16px;
@@ -344,18 +383,24 @@ h1 {
 
 .plot-overlay-content {
     position: relative;
-    max-width: 90vw;        /* Viewport width units */
-    max-height: 90vh;       /* Viewport height units */
+    max-width: 90vw;
+    /* Viewport width units */
+    max-height: 90vh;
+    /* Viewport height units */
     width: auto;
     height: auto;
     background: #1a202c;
     padding: 20px;
     border-radius: 8px;
     border: 1px solid #4a5568;
-    display: flex;          /* Added */
-    justify-content: center; /* Added */
-    align-items: center;    /* Added */
-    overflow: hidden;       /* Added */
+    display: flex;
+    /* Added */
+    justify-content: center;
+    /* Added */
+    align-items: center;
+    /* Added */
+    overflow: hidden;
+    /* Added */
 }
 
 .plot-overlay-content img {
@@ -379,9 +424,10 @@ h1 {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border: 1px solid #4a5568;
-    z-index: 1001;          /* Added to ensure it stays above image */
+    z-index: 1001;
+    /* Added to ensure it stays above image */
 }
 
 .close-overlay:hover {
@@ -410,7 +456,8 @@ h1 {
 
 .cleaning-link a {
     display: inline-block;
-    background-color: #48bb78;  /* Green */
+    background-color: #48bb78;
+    /* Green */
     color: white;
     padding: 8px 16px;
     text-decoration: none;
@@ -418,19 +465,22 @@ h1 {
     font-size: 14px;
     font-weight: 500;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Additional contrast adjustments */
 a {
-    color: #63b3ed;  /* Light blue for links */
+    color: #63b3ed;
+    /* Light blue for links */
 }
 
 a:hover {
     color: #4299e1;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
     background-color: #2d3748;
     border: 1px solid #4a5568;
     color: #e2e8f0;
@@ -438,19 +488,23 @@ input, select, textarea {
     border-radius: 4px;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
     outline: none;
     border-color: #63b3ed;
     box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.3);
 }
 
 .wider-select {
-    width: 200px; /* Adjust the width as needed */
+    width: 200px;
+    /* Adjust the width as needed */
 }
 
 .thumbnail-container {
     width: 100%;
-    height: 500px; /* Fixed height for thumbnails */
+    height: 500px;
+    /* Fixed height for thumbnails */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -480,8 +534,13 @@ input:focus, select:focus, textarea:focus {
 }
 
 @keyframes loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 /* Style for number input with up/down controls */
@@ -504,74 +563,100 @@ input:focus, select:focus, textarea:focus {
     border-radius: 8px;
     margin: 15px 0;
     border: 1px solid #4a5568;
-    display: flex; /* Use flexbox to align labels and inputs */
-    flex-direction: column; /* Stack labels and inputs vertically */
+    display: flex;
+    /* Use flexbox to align labels and inputs */
+    flex-direction: column;
+    /* Stack labels and inputs vertically */
 }
 
 #distributionInputs label {
-    margin-bottom: 5px; /* Add spacing below each label */
+    margin-bottom: 5px;
+    /* Add spacing below each label */
 }
 
 #distributionInputs input[type="number"],
 #distributionInputs select {
-    margin-bottom: 10px; /* Add spacing below each input */
-    padding: 8px; /* Increase padding for better touch experience */
-    border-radius: 4px; /* Slightly round the corners */
-    border: 1px solid #4a5568; /* Use a subtle border */
-    background-color: #2d3748; /* Dark background */
-    color: #e2e8f0; /* Light text color */
-    width: 100%; /* Make the inputs take the full width of the container */
-    box-sizing: border-box; /* Include padding and border in the element's total width */
+    margin-bottom: 10px;
+    /* Add spacing below each input */
+    padding: 8px;
+    /* Increase padding for better touch experience */
+    border-radius: 4px;
+    /* Slightly round the corners */
+    border: 1px solid #4a5568;
+    /* Use a subtle border */
+    background-color: #2d3748;
+    /* Dark background */
+    color: #e2e8f0;
+    /* Light text color */
+    width: 100%;
+    /* Make the inputs take the full width of the container */
+    box-sizing: border-box;
+    /* Include padding and border in the element's total width */
 }
 
 #distributionInputs input[type="number"]:focus,
 #distributionInputs select:focus {
-    outline: none; /* Remove the default focus outline */
-    border-color: #63b3ed; /* Change the border color on focus */
-    box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.3); /* Add a subtle shadow */
+    outline: none;
+    /* Remove the default focus outline */
+    border-color: #63b3ed;
+    /* Change the border color on focus */
+    box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.3);
+    /* Add a subtle shadow */
 }
 
 /* Style for result-entry */
 .result-entry {
-    background-color: #374151; /* A slightly lighter background */
+    background-color: #374151;
+    /* A slightly lighter background */
     border: 1px solid #4a5568;
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center; /* Center content within result entry */
+    text-align: center;
+    /* Center content within result entry */
 }
 
 .result-entry p {
-    color: #cbd5e0; /* A softer text color */
+    color: #cbd5e0;
+    /* A softer text color */
     margin-bottom: 10px;
-    padding: 0 10px; /* Add some padding to the sides of the text */
+    padding: 0 10px;
+    /* Add some padding to the sides of the text */
 }
 
 .result-entry img.thumbnail-image {
-    display: block; /* Ensure the image takes up the full width */
-    margin: 10px auto; /* Center the image horizontally */
-    max-width: 100%; /* Make sure image doesn't exceed container width */
-    height: auto; /* Maintain aspect ratio */
+    display: block;
+    /* Ensure the image takes up the full width */
+    margin: 10px auto;
+    /* Center the image horizontally */
+    max-width: 100%;
+    /* Make sure image doesn't exceed container width */
+    height: auto;
+    /* Maintain aspect ratio */
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .column-option {
         flex: 1 0 calc(50% - 10px);
-        min-width: auto; /* Allow columns to shrink on smaller screens */
+        min-width: auto;
+        /* Allow columns to shrink on smaller screens */
     }
 
     .container {
         padding: 1rem;
     }
+
     .upload-section {
         flex-direction: column;
     }
 
     .wider-select {
-        width: 80%; /* Adjust the width as needed */
+        width: 80%;
+        /* Adjust the width as needed */
     }
+
     .visualization-grid {
         grid-template-columns: 1fr;
     }
@@ -597,19 +682,23 @@ input:focus, select:focus, textarea:focus {
     }
 
     /* Ensure buttons in probability space wrap */
-    #probabilitySpaceDiv > button {
+    #probabilitySpaceDiv>button {
         margin-right: 5px;
         margin-bottom: 5px;
     }
 
     /* General input adjustments */
-    input, select, textarea {
+    input,
+    select,
+    textarea {
         padding: 6px 10px;
     }
 
     /* Distribution select adjustments */
     #distributionSelect {
-        width: 100%; /* Make the select box take the full width */
-        box-sizing: border-box; /* Include padding and border in the element's total width */
+        width: 100%;
+        /* Make the select box take the full width */
+        box-sizing: border-box;
+        /* Include padding and border in the element's total width */
     }
 }

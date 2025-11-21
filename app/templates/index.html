@@ -2,18 +2,106 @@
 
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_index.css') }}">
-<h1>Data Science Tools</h1>
+
+<h1>Technical Portfolio</h1>
+
 <div class="links">
     <!-- First row - Cleaning Stage -->
-    <a href="{{ url_for('main.data_science_front') }}">Data Science</a>
 
-    <!-- Second row - Supervised and No Supervised -->
+    <!-- Second row -->
     <div class="row">
+        <a href="{{ url_for('main.data_science_front') }}">Data Science</a>
         <a href="{{ url_for('main.web_development') }}">Web Development</a>
-        <!-- <a href="{{ url_for('main.nosupervised') }}" class="disabled">No supervised Analysis</a> -->
+    </div>
+</div>
+
+<section class="about-header">
+    <div class="about-header-text">
+        <h2>About Me</h2>
+        <p>
+            I'm <strong>Raúl Domínguez</strong>, PhD in Astrophysics from
+            <strong>Heidelberg University</strong>, specializing in
+            <strong>large-scale data analysis</strong>,
+            high-performance image processing and simulations
+            to reconstruct astrophysical environments.
+        </p>
+        <p>
+            I transform data into clear insights through Machine Learning,
+            automation pipelines, and dashboard storytelling — integrating
+            analytics into real digital products.
+        </p>
     </div>
 
-    <!-- Third row - Statistical Inference -->
-    <!-- <a href="{{ url_for('main.inference') }}">Statistical Inference</a> -->
-</div>
+    <div class="about-header-image">
+        <img src="{{ url_for('static', filename='images/foto11.png') }}" alt="Raúl Domínguez">
+    </div>
+</section>
+
+
+<section class="about-details">
+
+    <div class="about-card">
+        <h3>🔭 Scientific & Technical Foundation</h3>
+        <p>
+            Expert in handling massive datasets, image reduction, and reproducible simulations
+            — especially for star cluster modelling.
+        </p>
+    </div>
+
+    <div class="about-card">
+        <h3>🤖 Data Science & Analytics Expertise</h3>
+        <p>
+            Full pipeline experience: ingestion → preprocessing → ML modelling →
+            insights delivery.
+        </p>
+    </div>
+
+    <div class="skills">
+        <h3>Tech Stack</h3>
+
+        <div class="skill-group">
+            <h4>🧠 Machine Learning</h4>
+            <p>Scikit-learn, PyTorch, TensorFlow</p>
+        </div>
+
+        <div class="skill-group">
+            <h4>🐍 Data Engineering + Programming</h4>
+            <p>Python — Pandas, NumPy, OpenCV, APIs — SQL — Docker — Linux</p>
+        </div>
+
+        <div class="skill-group">
+            <h4>📊 Visualization & BI</h4>
+            <p>Power BI, Tableau, Matplotlib, Plotly</p>
+        </div>
+
+        <div class="skill-group">
+            <h4>🌐 Web Development</h4>
+            <p>Flask, HTML/CSS, JavaScript, REST integrations</p>
+        </div>
+
+        <div class="skill-group">
+            <h4>⚙️ Software Engineering</h4>
+            <p>GitHub, GitLab, CI/CD fundamentals, Agile</p>
+        </div>
+    </div>
+
+    <div class="about-card">
+        <h3>🎯 Purpose & Motivation</h3>
+        <p>
+            Committed to applying science and analytics to drive impactful solutions
+            and innovation in Chile and beyond.
+        </p>
+    </div>
+
+    <p class="contact-cta">
+        Let’s talk — connect on
+        <a href="https://www.linkedin.com/in/raul-dominguez-astrophysicist/">LinkedIn</a>
+        or
+        <a href="https://github.com/raul-dominguez-astrophysicist">GitHub</a>.
+    </p>
+
+</section>
+
+
+
 {% endblock %}
