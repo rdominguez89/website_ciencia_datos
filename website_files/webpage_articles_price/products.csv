@@ -1,0 +1,10 @@
+id,name,short_desc,long_desc,price,images
+1,Wirelesss Headphones,"Premium sound quality","Experience crystal-clear audio with our premium wireless headphones featuring noise cancellation and 30-hour battery life.",149.99,headphone1.jpg,headphone2.jpg,headphone3.jpg
+2,Smart Watch,"Fitness tracking","Stay connected and monitor your health with our advanced smartwatch featuring heart rate monitoring and GPS tracking.",199.99,watch1.jpg,watch2.jpg,watch3.jpg
+3,Laptop Stand,"Ergonomic design","Improve your workspace with our adjustable aluminum laptop stand that promotes better posture and cooling.",79.99,stand1.jpg,stand2.jpg,stand3.jpg
+4,Mechanical Keyboard,"RGB backlit","Type in style with our mechanical keyboard featuring customizable RGB lighting and responsive switches.",129.99,keyboard1.jpg,keyboard2.jpg,keyboard3.jpg
+5,Wireless Mouse,"Precision tracking","Smooth and accurate wireless mouse with ergonomic design and long-lasting battery.",49.99,mouse1.jpg,mouse2.jpg,mouse3.jpg
+6,Desk Lamp,"Adjustable brightness","Modern LED desk lamp with touch controls and multiple brightness levels for optimal lighting.",39.99,lamp1.jpg,lamp2.jpg,lamp3.jpg
+7,Desk Lamp2,"Adjustable brightness","Modern LED desk lamp with touch controls and multiple brightness levels for optimal lighting.",39.99,lamp1.jpg,lamp2.jpg,lamp3.jpg
+8,Desk Lamp3,"Adjustable brightness","Modern LED desk lamp with touch controls and multiple brightness levels for optimal lighting.",39.99,lamp1.jpg,lamp2.jpg,lamp3.jpg
+9,Desk Lamp4,"Adjustable brightness","Modern LED desk lamp with touch controls and multiple brightness levels for optimal lighting.",39.99,lamp1.jpg,lamp2.jpg,lamp3.jpg

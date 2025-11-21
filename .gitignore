@@ -15,6 +15,7 @@ venv/
 
 # Data files
 *.csv
+!website_files/webpage_articles_price/products.csv
 *.pickle
 *.pkl
 *.parquet
