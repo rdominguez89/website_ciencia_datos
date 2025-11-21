@@ -1,5 +1,6 @@
 import os
-from tkinter.tix import MAX
+
+MAX = 1000000
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') 
