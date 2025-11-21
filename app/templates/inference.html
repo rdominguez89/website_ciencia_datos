@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_inference.css') }}">
-    <a href="{{ url_for('main.index') }}" class="back-button">Home</a>
-    <h1>Statistical Inference</h1>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_inference.css') }}">
+<a href="{{ url_for('main.index') }}" class="back-button">Home</a>
+<a href="{{ url_for('main.data_science_front') }}" class="back-button">Data Science Tools</a>
+<h1>Statistical Inference</h1>
 
-    <div id="dataPreview"></div>
+<div id="dataPreview"></div>
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ url_for('static', filename='js/inference.js') }}"></script>
+<script src="{{ url_for('static', filename='js/inference.js') }}"></script>
 {% endblock %}
