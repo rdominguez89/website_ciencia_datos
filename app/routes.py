@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, send_file, current_app, abort
+from flask import Blueprint, render_template, request, jsonify, send_file, current_app, abort, session, redirect, url_for, make_response
 import pandas as pd
 import os
 import re
@@ -8,6 +8,7 @@ from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 from werkzeug.exceptions import HTTPException
+from flask_babel import get_locale
 from .utils import allowed_file, load_dataframe, get_stats_summary, clean_dataframe, create_visualizations_function, remove_outliers_function, create_correlation_plots_function, save_dataframe
 from .analyze_supervised import analyze_data
 from .analyze_inference import perform_one_sample_ttest, perform_correlation, analyze_distribution
@@ -44,7 +45,7 @@ def restrict_api_origin():
     This ensures that API endpoints are only accessible from our webpages.
     """
     if request.path.startswith('/api/'):
-        allowed_origins = {"http://127.0.0.1:5000", "https://rastro.pythonanywhere.com"}
+        allowed_origins = {"https://rastro.pythonanywhere.com"}
         origin = request.headers.get("Origin")
         if origin not in allowed_origins:
             current_app.logger.error(f"Blocked API access from Origin: {origin}")
@@ -83,12 +84,36 @@ def validate_filename(filename):
         raise ValueError("Invalid filename")
     return secure_filename(filename)
 
+@bp.app_context_processor
+def inject_locale():
+    """Make get_locale available in all templates."""
+    return dict(get_locale=get_locale)
+
 @bp.route('/')
 def index():
     """Render the main index page."""
     return render_template('index.html')
 
-@bp.route('/datascience')
+@bp.route('/set_language/<language>')
+def set_language(language):
+    """Set the user's preferred language."""
+    if language not in ['en', 'es']:
+        abort(400)
+    
+    session['language'] = language
+    
+    # Get the referring page or default to index
+    referrer = request.referrer or url_for('main.index')
+    
+    # Create response with redirect
+    response = make_response(redirect(referrer))
+    
+    # Set cookie to persist language preference (1 year)
+    response.set_cookie('language', language, max_age=31536000)
+    
+    return response
+
+@bp.route('/data_science')
 def data_science_front():
     """Render the data datascience page."""
     return render_template('data_science_front.html')

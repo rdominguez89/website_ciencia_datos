@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a href="{{ url_for('main.index') }}" class="back-button">Home</a>
+<a href="{{ url_for('main.index') }}" class="back-button">{{ _('Home') }}</a>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_data_science.css') }}">
-<h1>Data Science Tools</h1>
+<h1>{{ _('Data Science Tools') }}</h1>
 <div class="links">
     <!-- First row - Cleaning Stage -->
-    <a href="{{ url_for('main.cleaning') }}">Cleaning/Exploration Data</a>
+    <a href="{{ url_for('main.cleaning') }}">{{ _('Cleaning/Exploration Data') }}</a>
 
     <!-- Second row - Supervised and No Supervised -->
     <div class="row">
-        <a href="{{ url_for('main.supervised') }}">Supervised Analysis</a>
-        <a href="{{ url_for('main.nosupervised') }}" class="disabled">No supervised Analysis</a>
+        <a href="{{ url_for('main.supervised') }}">{{ _('Supervised Analysis') }}</a>
+        <a href="{{ url_for('main.nosupervised') }}" class="disabled">{{ _('No supervised Analysis') }}</a>
     </div>
 
     <!-- Third row - Statistical Inference -->
-    <a href="{{ url_for('main.inference') }}">Statistical Inference</a>
+    <a href="{{ url_for('main.inference') }}">{{ _('Statistical Inference') }}</a>
 </div>
 {% endblock %}

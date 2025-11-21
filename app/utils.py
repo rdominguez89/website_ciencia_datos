@@ -1,3 +1,4 @@
+from tkinter.tix import MAX
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
@@ -8,6 +9,8 @@ import os
 from flask import send_file
 from .analyze_supervised import add_watermark_fig, add_watermark_fig_ax
 
+MAX_ROWS = 4000
+MAX_COLUMNS = 20
 
 matplotlib.use('Agg')
 
@@ -18,9 +21,9 @@ def allowed_file(filename):
 def load_dataframe(file):
     """Load and validate CSV file with row and column limits."""
     df = pd.read_csv(file)
-    if len(df) > 1000:
+    if len(df) > MAX_ROWS:
         raise ValueError('File exceeds 1000 row limit')
-    if len(df.columns) > 13:
+    if len(df.columns) > MAX_COLUMNS:
         raise ValueError('File exceeds 10 column limit')
     return df
 

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a href="{{ url_for('main.index') }}" class="back-button">Home</a>
+<a href="{{ url_for('main.index') }}" class="back-button">{{ _('Home') }}</a>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_web_development.css') }}">
-<h1>Web Development Samples</h1>
+<h1>{{ _('Web Development Samples') }}</h1>
 <div class="links">
     <!-- First row - Cleaning Stage -->
-    <a href="{{ url_for('main.web_static') }}">Static Website (HTML, CSS, JS)</a>
+    <a href="{{ url_for('main.web_static') }}">{{ _('Static Website (HTML, CSS, JS)') }}</a>
 
     <!-- Second row - Supervised and No Supervised -->
     <!-- <div class="row">

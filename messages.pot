@@ -1,0 +1,144 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-11-21 17:40-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: app/templates/data_science_front.html:4 app/templates/web_development.html:4
+msgid "Home"
+msgstr ""
+
+#: app/templates/data_science_front.html:6
+msgid "Data Science Tools"
+msgstr ""
+
+#: app/templates/data_science_front.html:9
+msgid "Cleaning/Exploration Data"
+msgstr ""
+
+#: app/templates/data_science_front.html:13
+msgid "Supervised Analysis"
+msgstr ""
+
+#: app/templates/data_science_front.html:14
+msgid "No supervised Analysis"
+msgstr ""
+
+#: app/templates/data_science_front.html:18
+msgid "Statistical Inference"
+msgstr ""
+
+#: app/templates/index.html:6
+msgid "Technical Portfolio"
+msgstr ""
+
+#: app/templates/index.html:13
+msgid "Data Science"
+msgstr ""
+
+#: app/templates/index.html:14 app/templates/index.html:74
+msgid "Web Development"
+msgstr ""
+
+#: app/templates/index.html:20
+msgid "About Me"
+msgstr ""
+
+#: app/templates/index.html:22
+msgid ""
+"I'm <strong>Raúl Domínguez</strong>, PhD in Astrophysics from "
+"<strong>Heidelberg University</strong>,\n"
+"            specializing in <strong>large-scale data analysis</strong>, "
+"high-performance image processing and\n"
+"            simulations pipelines for complex systems."
+msgstr ""
+
+#: app/templates/index.html:27
+msgid ""
+"I transform data into clear, actionable insights through machine "
+"learning, automation workflows, and\n"
+"            dashboard-driven communication — integrating analytics into "
+"real, scalable digital products."
+msgstr ""
+
+#: app/templates/index.html:41
+msgid "Scientific & Technical Foundation"
+msgstr ""
+
+#: app/templates/index.html:43
+msgid ""
+"Expert in handling massive datasets, image reduction, and reproducible "
+"simulations for complex\n"
+"            systems."
+msgstr ""
+
+#: app/templates/index.html:49
+msgid "Data Science & Analytics Expertise"
+msgstr ""
+
+#: app/templates/index.html:51
+msgid ""
+"Full pipeline experience: Data acquisition → preprocessing → ML modelling"
+" → insights delivery."
+msgstr ""
+
+#: app/templates/index.html:56
+msgid "Tech Stack"
+msgstr ""
+
+#: app/templates/index.html:59
+msgid "Machine Learning"
+msgstr ""
+
+#: app/templates/index.html:64
+msgid "Data Engineering + Programming"
+msgstr ""
+
+#: app/templates/index.html:69
+msgid "Visualization"
+msgstr ""
+
+#: app/templates/index.html:79
+msgid "Software Engineering"
+msgstr ""
+
+#: app/templates/index.html:85
+msgid "Purpose & Motivation"
+msgstr ""
+
+#: app/templates/index.html:87
+msgid ""
+"Committed to applying science and analytics to drive impactful solutions "
+"and innovation in Chile and\n"
+"            beyond."
+msgstr ""
+
+#: app/templates/index.html:93
+msgid "Let's talk — connect on"
+msgstr ""
+
+#: app/templates/index.html:95
+msgid "or"
+msgstr ""
+
+#: app/templates/web_development.html:6
+msgid "Web Development Samples"
+msgstr ""
+
+#: app/templates/web_development.html:9
+msgid "Static Website (HTML, CSS, JS)"
+msgstr ""
+
