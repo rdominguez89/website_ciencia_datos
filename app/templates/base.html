@@ -28,7 +28,7 @@
         content="{% block og_description %}PhD in Astrophysics specializing in data science, machine learning, and web development. Transforming data into actionable insights.{% endblock %}">
     <meta property="og:image"
         content="{% block og_image %}{{ url_for('static', filename='images/foto11.png', _external=True) }}{% endblock %}">
-    <meta property="og:locale" content="{{ get_locale() }}_{{ get_locale().upper() }}">
+    <meta property="og:locale" content="{{ get_locale()|string }}_{{ get_locale()|string|upper }}">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
