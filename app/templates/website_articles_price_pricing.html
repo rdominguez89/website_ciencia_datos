@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="{{ url_for('main.web_static') }}" class="back-button">{{ _('Home') }}</a>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_pricing.css') }}">
+
+<h1>Propuesta de Desarrollo Web</h1>
+
+<section class="about-header">
+    <div class="about-header-text">
+        <h2>🎯 Objetivo del Proyecto</h2>
+        <p>
+            Crear un sitio web <strong>moderno, responsivo y enfocado</strong> en exhibir productos con acceso rápido
+            a contacto mediante WhatsApp, permitiendo escalarlo a funciones de tienda online a futuro.
+        </p>
+    </div>
+</section>
+
+<section class="about-details">
+
+    <div class="about-card">
+        <h3>📋 Alcance del Proyecto</h3>
+        <h4>Estructura del Sitio</h4>
+        <ul style="text-align: left; margin-left: 20px;">
+            <li>Página principal con productos destacados</li>
+            <li>Sección de productos con imágenes y precios</li>
+            <li>Subpáginas de categorías</li>
+            <li>Página de contacto</li>
+            <li>Botón fijo de WhatsApp en todo el sitio</li>
+            <li>Diseño adaptable (móvil, tablet y escritorio)</li>
+            <li>Carga inicial de hasta 50 productos</li>
+        </ul>
+    </div>
+
+    <div class="about-card">
+        <h3>💻 Tecnologías</h3>
+        <h4>Sitio Estático</h4>
+        <ul style="text-align: left; margin-left: 20px;">
+            <li><strong>Frontend:</strong> HTML, CSS, JavaScript</li>
+            <li><strong>Integración:</strong> WhatsApp / WhatsApp Business</li>
+            <li><strong>Base de datos:</strong> SQL para gestión de inventario</li>
+            <li><strong>Escalabilidad:</strong> Preparación para transición futura a carrito de compras</li>
+        </ul>
+    </div>
+
+    <div class="about-card">
+        <h3>📦 Entregables</h3>
+        <ul style="text-align: left; margin-left: 20px;">
+            <li>✅ Sitio web funcional y publicado</li>
+            <li>✅ Video manual básico para agregar/modificar/eliminar inventario</li>
+            <li>✅ Gestión de imágenes y textos en base de datos SQL</li>
+            <li>✅ Copia de seguridad del proyecto completo</li>
+        </ul>
+    </div>
+
+    <div class="skills">
+        <h3>⏱️ Plazos Estimados</h3>
+
+        <div class="skill-group">
+            <h4>Fase 1: Diseño</h4>
+            <p>Diseño y estructura visual: <strong>3 días hábiles</strong></p>
+        </div>
+
+        <div class="skill-group">
+            <h4>Fase 2: Desarrollo</h4>
+            <p>Desarrollo + carga de productos: <strong>4-6 días hábiles</strong></p>
+        </div>
+
+        <div class="skill-group">
+            <h4>Fase 3: Finalización</h4>
+            <p>Revisión y ajustes finales: <strong>2 días hábiles</strong></p>
+        </div>
+
+        <div class="skill-group"
+            style="background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%); padding: 20px; border-radius: 15px;">
+            <h4 style="color: white;">⏰ Total Estimado</h4>
+            <p style="color: white; font-size: 1.2rem;"><strong>9-11 días hábiles</strong></p>
+        </div>
+    </div>
+
+    <div class="about-card" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: white;">
+        <h3 style="color: white;">💰 Presupuesto</h3>
+
+        <table style="width: 100%; margin-top: 20px; color: white;">
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.3);">
+                <td style="padding: 10px;"><strong>Servicio</strong></td>
+                <td style="padding: 10px; text-align: right;"><strong>Precio CLP</strong></td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                <td style="padding: 10px;">Desarrollo web completo</td>
+                <td style="padding: 10px; text-align: right; font-size: 1.2rem;"><strong>$350.000</strong></td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                <td style="padding: 10px;">Carga inicial de 50 productos</td>
+                <td style="padding: 10px; text-align: right; color: #4ade80;"><strong>Incluida</strong></td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                <td style="padding: 10px;">Productos adicionales</td>
+                <td style="padding: 10px; text-align: right;">$1.500 c/u</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                <td style="padding: 10px;">Mantenimiento mensual (opcional)</td>
+                <td style="padding: 10px; text-align: right;">$40.000</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                <td style="padding: 10px;">Orientación para actualizaciones (opcional)</td>
+                <td style="padding: 10px; text-align: right;">$50.000</td>
+            </tr>
+            <tr style="background: rgba(255,255,255,0.1);">
+                <td style="padding: 15px;"><strong style="font-size: 1.1rem;">TOTAL PROYECTO</strong></td>
+                <td style="padding: 15px; text-align: right; font-size: 1.5rem;"><strong>$350.000</strong></td>
+            </tr>
+        </table>
+
+        <p
+            style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; text-align: center;">
+            <strong>💳 Método de pago:</strong><br>
+            50% al inicio | 50% a la entrega final
+        </p>
+    </div>
+
+    <p class="contact-cta">
+        ¿Listo para comenzar? —
+        <a href="https://www.linkedin.com/in/raul-dominguez-astrophysicist/" style="color: #2563eb;">Contáctame en
+            LinkedIn</a>
+        {{ _('or') }}
+        <a href="https://wa.me/56123456789" style="color: #25d366;">WhatsApp</a>
+    </p>
+
+</section>
+
+{% endblock %}

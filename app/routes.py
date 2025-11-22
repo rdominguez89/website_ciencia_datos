@@ -45,7 +45,7 @@ def restrict_api_origin():
     This ensures that API endpoints are only accessible from our webpages.
     """
     if request.path.startswith('/api/'):
-        allowed_origins = {"https://rastro.pythonanywhere.com"}
+        allowed_origins = {"http://127.0.0.1:5000", "https://rastro.pythonanywhere.com"}
         origin = request.headers.get("Origin")
         if origin not in allowed_origins:
             current_app.logger.error(f"Blocked API access from Origin: {origin}")
@@ -141,6 +141,11 @@ def website_articles_price_static(filename):
     if os.path.exists(file_path) and os.path.isfile(file_path):
         return send_file(file_path)
     abort(404)
+
+@bp.route('/pricing')
+def website_articles_price_pricing():
+    """Render the pricing/proposal page."""
+    return render_template('website_articles_price_pricing.html')
 
 @bp.route('/cleaning')
 def cleaning():

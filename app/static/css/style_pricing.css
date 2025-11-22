@@ -16,6 +16,35 @@ body {
     box-sizing: border-box;
 }
 
+
+
+/* Header Section */
+.header-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.back-button {
+    display: inline-block;
+    background-color: #48bb78;
+    /* Green */
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-weight: 500;
+}
+
+.back-button:hover {
+    background-color: #38a169;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+
 h1,
 h2,
 h3,
@@ -123,7 +152,7 @@ nav a:hover {
 ========================= */
 
 .about-details {
-    max-width: 1150px;
+    max-width: 1050px;
     margin: 0 auto;
     padding: 1rem 1.5rem 3rem;
 }
