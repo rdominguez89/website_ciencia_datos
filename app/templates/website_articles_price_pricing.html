@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a href="{{ url_for('main.web_static') }}" class="back-button">{{ _('Home') }}</a>
+<a href="{{ url_for('main.index') }}" class="back-button">{{ _('Home') }}</a>
+<a href="{{ url_for('main.web_development') }}" class="back-button">{{ _('Web Development') }}</a>
+<a href="{{ url_for('main.web_static') }}" class="back-button">{{ _('Static') }}</a>
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_pricing.css') }}">
 
 <h1>Propuesta de Desarrollo Web</h1>

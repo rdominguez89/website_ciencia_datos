@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-11-21 17:40-0300\n"
+"POT-Creation-Date: 2025-11-22 16:28-0300\n"
 "PO-Revision-Date: 2025-11-21 16:02-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -19,6 +19,8 @@ msgstr ""
 "Generated-By: Babel 2.17.0\n"
 
 #: app/templates/data_science_front.html:4 app/templates/web_development.html:4
+#: app/templates/web_static.html:4
+#: app/templates/website_articles_price_pricing.html:4
 msgid "Home"
 msgstr ""
 
@@ -51,6 +53,8 @@ msgid "Data Science"
 msgstr ""
 
 #: app/templates/index.html:14 app/templates/index.html:74
+#: app/templates/web_static.html:5
+#: app/templates/website_articles_price_pricing.html:5
 msgid "Web Development"
 msgstr ""
 
@@ -132,15 +136,28 @@ msgid "Let's talk — connect on"
 msgstr ""
 
 #: app/templates/index.html:95
+#: app/templates/website_articles_price_pricing.html:129
 msgid "or"
 msgstr ""
 
-#: app/templates/web_development.html:6
+#: app/templates/web_development.html:6 app/templates/web_static.html:7
 msgid "Web Development Samples"
 msgstr ""
 
 #: app/templates/web_development.html:9
 msgid "Static Website (HTML, CSS, JS)"
+msgstr ""
+
+#: app/templates/web_static.html:13
+msgid "E-commerce Demo"
+msgstr ""
+
+#: app/templates/web_static.html:14
+msgid "Service Proposal Page"
+msgstr ""
+
+#: app/templates/website_articles_price_pricing.html:6
+msgid "Static"
 msgstr ""
 
 #~ msgid "I'm"

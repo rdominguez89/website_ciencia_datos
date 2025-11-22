@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-11-21 17:40-0300\n"
+"POT-Creation-Date: 2025-11-22 16:28-0300\n"
 "PO-Revision-Date: 2025-11-21 16:02-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -19,6 +19,8 @@ msgstr ""
 "Generated-By: Babel 2.17.0\n"
 
 #: app/templates/data_science_front.html:4 app/templates/web_development.html:4
+#: app/templates/web_static.html:4
+#: app/templates/website_articles_price_pricing.html:4
 msgid "Home"
 msgstr "Inicio"
 
@@ -51,6 +53,8 @@ msgid "Data Science"
 msgstr "Ciencia de Datos"
 
 #: app/templates/index.html:14 app/templates/index.html:74
+#: app/templates/web_static.html:5
+#: app/templates/website_articles_price_pricing.html:5
 msgid "Web Development"
 msgstr "Desarrollo Web"
 
@@ -147,10 +151,11 @@ msgid "Let's talk — connect on"
 msgstr "Hablemos — contáctame en"
 
 #: app/templates/index.html:95
+#: app/templates/website_articles_price_pricing.html:129
 msgid "or"
 msgstr "o"
 
-#: app/templates/web_development.html:6
+#: app/templates/web_development.html:6 app/templates/web_static.html:7
 msgid "Web Development Samples"
 msgstr "Ejemplos de Desarrollo Web"
 
@@ -158,25 +163,17 @@ msgstr "Ejemplos de Desarrollo Web"
 msgid "Static Website (HTML, CSS, JS)"
 msgstr "Sitio Web Estático (HTML, CSS, JS)"
 
-#: app/templates/data_science_front.html:6
-msgid "Data Science Tools"
-msgstr "Herramientas de Ciencia de Datos"
+#: app/templates/web_static.html:13
+msgid "E-commerce Demo"
+msgstr "Demo de E-commerce"
 
-#: app/templates/data_science_front.html:9
-msgid "Cleaning/Exploration Data"
-msgstr "Limpieza/Exploración de Datos"
+#: app/templates/web_static.html:14
+msgid "Service Proposal Page"
+msgstr "Página de Propuesta de Servicios"
 
-#: app/templates/data_science_front.html:13
-msgid "Supervised Analysis"
-msgstr "Análisis Supervisado"
-
-#: app/templates/data_science_front.html:14
-msgid "No supervised Analysis"
-msgstr "Análisis No Supervisado"
-
-#: app/templates/data_science_front.html:18
-msgid "Statistical Inference"
-msgstr "Inferencia Estadística"
+#: app/templates/website_articles_price_pricing.html:6
+msgid "Static"
+msgstr "Estático"
 
 #~ msgid "I'm"
 #~ msgstr "Soy"
