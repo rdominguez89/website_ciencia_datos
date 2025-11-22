@@ -1,11 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}RD Portfolio{% endblock %}</title>
+
+    <!-- Title -->
+    <title>{% block title %}Raúl Domínguez - Data Science & Web Development Portfolio{% endblock %}</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="{% block meta_description %}Raúl Domínguez - PhD in Astrophysics specializing in data science, machine learning, and web development. Expert in Python, data analysis, and scalable digital solutions.{% endblock %}">
+    <meta name="keywords"
+        content="{% block meta_keywords %}data science, machine learning, web development, Python, astrophysics, data analysis, Flask, PyTorch, TensorFlow, Power BI, Chile{% endblock %}">
+    <meta name="author" content="Raúl Domínguez">
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{% block canonical %}{{ request.url }}{% endblock %}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title"
+        content="{% block og_title %}Raúl Domínguez - Data Science & Web Development Portfolio{% endblock %}">
+    <meta property="og:description"
+        content="{% block og_description %}PhD in Astrophysics specializing in data science, machine learning, and web development. Transforming data into actionable insights.{% endblock %}">
+    <meta property="og:image"
+        content="{% block og_image %}{{ url_for('static', filename='images/foto11.png', _external=True) }}{% endblock %}">
+    <meta property="og:locale" content="{{ get_locale() }}_{{ get_locale().upper() }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title"
+        content="{% block twitter_title %}Raúl Domínguez - Data Science & Web Development{% endblock %}">
+    <meta name="twitter:description"
+        content="{% block twitter_description %}Expert in data science, machine learning, and web development. PhD in Astrophysics from Heidelberg University.{% endblock %}">
+    <meta name="twitter:image"
+        content="{% block twitter_image %}{{ url_for('static', filename='images/foto11.png', _external=True) }}{% endblock %}">
+
+    <!-- Favicon -->
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/x-icon">
+
+    <!-- Fonts and External Resources -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Language Switcher */
@@ -162,6 +200,9 @@
             vertical-align: middle;
         }
     </style>
+
+    <!-- Structured Data -->
+    {% block structured_data %}{% endblock %}
 </head>
 
 <body>

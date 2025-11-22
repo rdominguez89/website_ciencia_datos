@@ -1,5 +1,72 @@
 {% extends "base.html" %}
 
+{% block title %}Raúl Domínguez - Data Scientist & Astrophysicist | Portfolio{% endblock %}
+
+{% block meta_description %}Raúl Domínguez - PhD in Astrophysics from Heidelberg University. Data scientist specializing
+in machine learning, Python, data analysis, and web development. View my portfolio of data science and web development
+projects.{% endblock %}
+
+{% block meta_keywords %}Raúl Domínguez, data scientist, astrophysicist, machine learning engineer, Python developer,
+data analysis, web development, Flask, PyTorch, TensorFlow, scikit-learn, Power BI, Tableau, Chile, Heidelberg
+University{% endblock %}
+
+{% block og_title %}Raúl Domínguez - Data Scientist & Astrophysicist Portfolio{% endblock %}
+
+{% block og_description %}PhD in Astrophysics specializing in data science, machine learning, and web development.
+Expert in large-scale data analysis, Python, and building scalable digital solutions.{% endblock %}
+
+{% block twitter_title %}Raúl Domínguez - Data Scientist & Astrophysicist{% endblock %}
+
+{% block twitter_description %}PhD in Astrophysics from Heidelberg University. Transforming data into actionable
+insights through machine learning and analytics.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Raúl Domínguez",
+  "jobTitle": "Data Scientist & Astrophysicist",
+  "description": "PhD in Astrophysics from Heidelberg University specializing in data science, machine learning, and web development",
+  "url": "{{ request.url_root }}",
+  "image": "{{ url_for('static', filename='images/foto11.png', _external=True) }}",
+  "alumniOf": {
+    "@type": "Organization",
+    "name": "Heidelberg University"
+  },
+  "hasCredential": {
+    "@type": "EducationalOccupationalCredential",
+    "credentialCategory": "degree",
+    "educationalLevel": "PhD",
+    "about": "Astrophysics"
+  },
+  "knowsAbout": [
+    "Data Science",
+    "Machine Learning",
+    "Python Programming",
+    "Web Development",
+    "Data Analysis",
+    "Astrophysics",
+    "PyTorch",
+    "TensorFlow",
+    "Scikit-learn",
+    "Power BI",
+    "Flask",
+    "SQL",
+    "Docker"
+  ],
+  "sameAs": [
+    "https://www.linkedin.com/in/ra%C3%BAl-dom%C3%ADnguez-53350b133/",
+    "https://github.com/rdominguez89/"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "Chile"
+  }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_index.css') }}">
 
@@ -91,9 +158,9 @@
 
     <p class="contact-cta">
         {{ _("Let's talk — connect on") }}
-        <a href="https://www.linkedin.com/in/raul-dominguez-astrophysicist/">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/ra%C3%BAl-dom%C3%ADnguez-53350b133/" target="_blank">LinkedIn</a>
         {{ _('or') }}
-        <a href="https://github.com/raul-dominguez-astrophysicist">GitHub</a>.
+        <a href="https://github.com/rdominguez89/" target="_blank">GitHub</a>.
     </p>
 
 </section>
